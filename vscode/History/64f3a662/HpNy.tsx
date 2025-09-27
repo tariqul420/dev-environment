@@ -1,0 +1,113 @@
+"use client";
+
+import { InputField } from "@/components/global/form-field/input-field";
+import PhoneInputField from "@/components/global/form-field/phone-input-field";
+import TextareaField from "@/components/global/form-field/textarea-field";
+import MyButton from "@/components/global/my-btn";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { sendContactEmail } from "@/lib/actions/contact.action";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
+
+// Zod schema for form validation (in Bengali for error messages)
+const contactSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, { message: "নাম কমপক্ষে ২ অক্ষরের হতে হবে" })
+    .max(50, { message: "নাম ৫০ অক্ষরের বেশি হতে পারবে না" }),
+  email: z.string().trim().email({ message: "অবৈধ ইমেইল ঠিকানা" }),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[0-9+\-\s()]*$/, "অবৈধ ফোন নাম্বার ফরম্যাট")
+    .min(13, "ফোন নাম্বার কমপক্ষে ১৩ ডিজিট হতে হবে")
+    .max(15, "ফোন নাম্বার ১৫ ডিজিটের বেশি হতে পারবে না"),
+  message: z
+    .string()
+    .trim()
+    .min(10, { message: "বার্তা কমপক্ষে ১০ অক্ষরের হতে হবে" })
+    .max(500, { message: "বার্তা ৫০০ অক্ষরের বেশি হতে পারবে না" }),
+});
+
+type ContactFormValues = z.infer<typeof contactSchema>;
+
+export default function ContactForm() {
+  const [sending, setSending] = useState(false);
+
+  // Initialize the form with react-hook-form and Zod resolver
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    },
+  });
+
+  // Form submission handler
+  const onSubmit = async (data: ContactFormValues) => {
+    setSending(true);
+
+    toast.promise(sendContactEmail(data), {
+      loading: "Sending your message...",
+      success: (response) => {
+        form.reset();
+        setSending(false);
+        return response.message || "Message sent successfully!";
+      },
+      error: () => {
+        setSending(false);
+        return "Failed to send message. Please try again.";
+      },
+    });
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 rounded-lg border p-6 shadow-md"
+      >
+        {/* Name Field */}
+        <InputField name="name" label="নাম" placeholder="আপনার নাম লিখুন" />
+
+        {/* Email Field */}
+        <InputField
+          name="email"
+          label="ইমেইল"
+          placeholder="আপনার ইমেইল লিখুন"
+          type="email"
+        />
+
+        {/* Phone Number Field */}
+        <PhoneInputField name="phone" label="আপনার মোবাইল নাম্বারটি লিখুন *" />
+
+        {/* Message Field */}
+        <TextareaField
+          name="message"
+          label="আপনার বার্তা"
+          placeholder="আপনার বার্তা লিখুন"
+        />
+
+        {/* Submit Button */}
+        {!sending ? (
+          <MyButton disabled={sending} className="w-full" type="submit">
+            বার্তা পাঠান
+          </MyButton>
+        ) : (
+          <Button className="w-full" disabled>
+            <Loader2 className="animate-spin" />
+            Please wait
+          </Button>
+        )}
+      </form>
+    </Form>
+  );
+}

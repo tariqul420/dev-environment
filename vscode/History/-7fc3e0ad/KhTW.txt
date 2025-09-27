@@ -1,0 +1,23 @@
+....................................
+ _*Commands List*_
+....................................
+*sudo apt update*
+*sudo apt upgrade*
+*reboot*
+
+*sudo apt install timeshift*
+> backup current os backup using timeshift
+
+*sudo apt install git curl wget sassc gnome-tweaks gnome-shell-extension-manager*
+
+
+....................................
+*To Setup Flatpak*
+....................................
+*sudo apt install flatpak*
+*flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo*
+
+....................................
+*Adjust the ubuntu setting*
+....................................
+| setting > 

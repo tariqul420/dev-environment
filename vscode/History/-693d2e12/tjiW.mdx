@@ -1,0 +1,300 @@
+# Deployment and Backup Guide for Mongodb Database on Hostinger VPS
+
+## Overview
+
+This guide walks you through deploying MongoDB on a Hostinger VPS (Ubuntu 22.04+) and setting up an automated backup system. It configures hourly backups for the `database_name` database and retains a maximum of 5 backups locally or optionally uploads them to AWS S3.
+
+## Prerequisites
+
+- **Hostinger VPS** (Ubuntu 22.04 or later)
+- **MongoDB installed**
+- **Environment variables**: MongoDB username and password
+- **Optional**: AWS S3 bucket + AWS CLI (for offsite backup)
+
+## Step 0: Get Access to Remote Server:
+
+- **Log in to VPS**:
+
+```bash
+ssh root@your-vps-ip
+```
+
+- **Update System:**
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+---
+
+## Step 1: Install and Configure MongoDB
+
+### 1.1 Install MongoDB and enable service
+
+```bash
+sudo apt-get install gnupg curl
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+   --dearmor
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+sudo systemctl start mongod
+sudo systemctl enable mongod
+```
+
+### 1.2 Secure MongoDB
+
+Security is crucial, especially in a production environment. Follow these steps to secure your MongoDB installation.
+
+#### Create an Admin User:
+
+Open the MongoDB shell:
+
+```bash
+mongosh
+```
+
+Switch to the admin database:
+
+```bash
+use admin
+```
+
+Create an admin user:
+
+```bash
+db.createUser({user: "username" , pwd: passwordPrompt() , roles: ["root"]})
+```
+
+Verify Users:
+
+```bash
+show users
+```
+
+Create New User with Read & Write Permission and New Database
+
+```bash
+use database_name
+db.createUser({user:"username", pwd:passwordPrompt(), roles:[{role:"readWrite", db:"database_name"}]})
+```
+
+Verify Users:
+
+```bash
+show users
+```
+
+Exit the shell:
+
+```bash
+exit
+```
+
+#### Enable Authentication:
+
+Open the MongoDB configuration file
+
+```bash
+sudo nano /etc/mongod.conf
+```
+
+Look for the `security` section and add the following:
+
+```bash
+security:
+authorization: enabled
+```
+
+## Step 2: Configure MongoDB for Production
+
+MongoDB's default settings are not optimized for production. Let's make some tweaks.
+
+### Limit Bind IP:
+
+Open the MongoDB configuration file:
+
+```bash
+sudo nano /etc/mongod.conf
+```
+
+Find the `net` section and set `bindIp` to your server's IP address and localhost:
+
+```bash
+net:
+bindIp: 127.0.0.1
+```
+
+### Set Up a Firewall:
+
+Enable UFW
+
+```bash
+sudo ufw enable
+```
+
+Use UFW (Uncomplicated Firewall) to allow only specific IP addresses to access MongoDB
+
+```bash
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw allow 22
+sudo ufw deny 27017
+```
+
+## Setup MongoDB Backup Script
+
+### Create Backup Directory
+
+```bash
+mkdir -p ~/backups/mongodb
+```
+
+### Local Backup Script
+
+Save the following as: `~/backups/mongodb_backup_database_name.sh`
+
+```bash
+#!/bin/bash
+BACKUP_DIR=~/backups/mongodb
+DB_NAME=database_name
+TIMESTAMP=$(date +%F-%H-%M-%S)
+BACKUP_NAME="backup-$DB_NAME-$TIMESTAMP.gz"
+
+# Create MongoDB backups
+mongodump --db $DB_NAME --authenticationDatabase database_name -u database_user -p your_secure_password --archive=$BACKUP_DIR/$BACKUP_NAME --gzip
+
+# Delete old backups from local directory (keep a maximum of 5)
+ls -t $BACKUP_DIR/backup-$DB_NAME-*.gz | tail -n +6 | xargs -I {} rm {}
+```
+
+Make it executable:
+
+```bash
+chmod +x ~/backups/mongodb_backup_database_name.sh
+```
+
+### [Optional] AWS S3 Backup Script
+
+Ensure AWS CLI is installed and configured.
+
+```bash
+aws configure
+```
+
+Modify the backup script to include S3 upload:
+
+```bash
+#!/bin/bash
+BACKUP_DIR=~/backups/mongodb
+DB_NAME=database_name
+TIMESTAMP=$(date +%F-%H-%M-%S)
+BACKUP_NAME="backup-$DB_NAME-$TIMESTAMP.gz"
+S3_BUCKET="s3://database_name-mongodb-backups"
+
+# Create MongoDB backups
+mongodump --db $DB_NAME --authenticationDatabase database_name -u database_user -p your_secure_password --archive=$BACKUP_DIR/$BACKUP_NAME --gzip
+
+# Backup upload to S3
+aws s3 cp $BACKUP_DIR/$BACKUP_NAME $S3_BUCKET/$BACKUP_NAME
+
+# Delete old backups from local directory (keep a maximum of 5)
+ls -t $BACKUP_DIR/backup-$DB_NAME-*.gz | tail -n +6 | xargs -I {} rm {}
+
+# Delete old backups from S3 (optional, if you want to keep a limited number of backups)
+aws s3 ls $S3_BUCKET/ | awk '{print $4}' | grep "backup-$DB_NAME" | sort -r | tail -n +6 | xargs -I {} aws s3 rm $S3_BUCKET/{}
+```
+
+## Step 3: Automate Backups with Cron
+
+Edit crontab:
+
+```bash
+crontab -e
+```
+
+Add this to run every hour:
+
+```bash
+0 * * * * ~/backups/mongodb_backup_database_name.sh
+```
+
+## Step 4: Test Your Configuration
+
+MongoDB Status
+
+```bash
+sudo systemctl status mongod
+```
+
+Backup Check
+
+```bash
+ls ~/backups/mongodb
+```
+
+### Access MongoDB with the new admin user:
+
+```bash
+mongosh --port 27017 --authenticationDatabase "database_name_where_user_stored" -u "username" -p "password"
+```
+
+### Test Connection from Your Application
+
+Use a MongoDB client or your application to connect to the database using the server's IP address, port, and credentials.
+
+### Uninstall MongoDB
+
+```bash
+sudo apt purge mongodb-org*
+```
+
+## Step 5: Connect With MongoDB Compass
+
+Download and install MongoDB Compass, a graphical user interface for MongoDB. To download click [here](https://www.mongodb.com/try/download/compass)
+
+If you want to access your database from anywhere you have to make changes on `/etc/monogd.conf` file.
+
+```bash
+sudo nano /etc/mongod.conf
+```
+
+Find the `net` section and comment out the `bindIp` line:
+
+```bash
+# network interfaces
+net:
+port: 27017
+bindIp: 0.0.0.0
+```
+
+Then restart MongoDB
+
+```bash
+sudo systemctl restart mongod
+```
+
+Now you can access your MongoDB from anywhere.
+
+To Make Connection use:
+
+```bash
+mongodb://your_server_ip:27017
+```
+
+If you are using authentication use this format
+
+```bash
+mongodb://username:password@your_server_ip:27017
+```
+
+For specific database use this format
+
+```bash
+mongodb://username:password@your_server_ip:27017/database_name
+```
+
+## Conclusion
+
+Congratulations! You've successfully installed and configured MongoDB for production on your Ubuntu VPS. With these steps, your database should be secure, optimized, and ready to handle the demands of a live environment. Remember to regularly update MongoDB, monitor its performance, and back up your data to ensure long-term reliability.

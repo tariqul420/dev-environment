@@ -1,0 +1,183 @@
+<!-- banner.svg — Nurui UI Animated Banner (dark/light auto) -->
+<svg width="1200" height="360" viewBox="0 0 1200 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Nurui UI — React + Next.js Component Library</title>
+  <desc id="desc">Animated banner with gradient text, shimmer, floating particles, and dark/light adaptive colors.</desc>
+
+  <!-- =================== THEME =================== -->
+  <style>
+    :root{
+      /* Dark theme (default) */
+      --bg0:#0a0a0a;               /* deep */
+      --bg1:#111111;               /* lite */
+      --txt:#e8eaf1;               /* text */
+      --muted:#b9b9c9;             /* subtitle */
+      --grad1:#9e7aff;             /* purple */
+      --grad2:#fe8bbb;             /* pink */
+      --accent:#9e7aff;
+      --chip-bg:rgba(255,255,255,0.06);
+      --chip-stroke:rgba(255,255,255,0.18);
+      --grid:rgba(255,255,255,0.06);
+      --glow:rgba(158,122,255,.75);
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg0:#ffffff;
+        --bg1:#f7f7ff;
+        --txt:#191a23;
+        --muted:#5b5f72;
+        --grad1:#7f67ff;  /* slightly deeper for light */
+        --grad2:#ff82a4;
+        --accent:#7f67ff;
+        --chip-bg:rgba(0,0,0,0.04);
+        --chip-stroke:rgba(0,0,0,0.08);
+        --grid:rgba(0,0,0,0.06);
+        --glow:rgba(127,103,255,.55);
+      }
+    }
+
+    .bg { fill:url(#bgGrad); }
+    .grid line { stroke:var(--grid); stroke-width:1; }
+
+    .title {
+      font: 800 64px/1.1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial;
+      fill:url(#txtGrad);
+      letter-spacing:.4px;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));
+    }
+    .subtitle {
+      font: 500 20px/1.55 ui-sans-serif, system-ui, Inter;
+      fill: var(--muted);
+    }
+
+    /* shimmer overlay */
+    .shimmer {
+      mask:url(#shine);
+      -webkit-mask:url(#shine);
+      animation: slide 3.2s linear infinite;
+      opacity:.15;
+    }
+    @keyframes slide {
+      0% { transform: translateX(-40%); }
+      100% { transform: translateX(140%); }
+    }
+
+    /* floating particles */
+    .p { opacity:.28; animation: float 8s ease-in-out infinite; }
+    .p2 { animation-delay:-2s; }
+    .p3 { animation-delay:-4s; }
+    .p4 { animation-delay:-6s; }
+    @keyframes float {
+      0% { transform: translateY(0px) }
+      50% { transform: translateY(-10px) }
+      100% { transform: translateY(0px) }
+    }
+
+    /* underline pulse */
+    .underline {
+      stroke:url(#txtGrad);
+      stroke-width:5;
+      stroke-linecap:round;
+      filter: drop-shadow(0 0 16px var(--glow));
+      animation:pulse 2.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100%{ opacity:.55 }
+      50%{ opacity:1 }
+    }
+
+    /* chips */
+    .chip text { font: 700 13px/1 ui-sans-serif, system-ui, Inter; }
+    .chip rect { fill:var(--chip-bg); stroke:var(--chip-stroke); }
+
+    /* CTA pill */
+    .cta text { font: 700 14px/1 ui-sans-serif, system-ui, Inter; }
+    .cta rect {
+      fill:url(#txtGrad);
+      filter: drop-shadow(0 6px 18px var(--glow));
+    }
+  </style>
+
+  <!-- ================ DEFS ================ -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1200" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--bg0)"/>
+      <stop offset="1" stop-color="var(--bg1)"/>
+    </linearGradient>
+
+    <linearGradient id="txtGrad" x1="0" y1="0" x2="100%" y2="0">
+      <stop offset="0" stop-color="var(--grad1)"/>
+      <stop offset="1" stop-color="var(--grad2)"/>
+    </linearGradient>
+
+    <!-- shimmer mask -->
+    <mask id="shine">
+      <rect x="0" y="0" width="1200" height="360" fill="black"/>
+      <rect x="-280" y="0" width="280" height="360" fill="white">
+        <animate attributeName="x" from="-280" to="1200" dur="3.2s" repeatCount="indefinite"/>
+      </rect>
+    </mask>
+  </defs>
+
+  <!-- ================ BACKGROUND ================ -->
+  <rect class="bg" x="0" y="0" width="1200" height="360" rx="28"/>
+
+  <!-- Subtle grid -->
+  <g class="grid">
+    <!-- vertical -->
+    <line x1="90"  x2="90"  y1="36" y2="324"/>
+    <line x1="240" x2="240" y1="36" y2="324"/>
+    <line x1="390" x2="390" y1="36" y2="324"/>
+    <line x1="540" x2="540" y1="36" y2="324"/>
+    <line x1="690" x2="690" y1="36" y2="324"/>
+    <line x1="840" x2="840" y1="36" y2="324"/>
+    <line x1="990" x2="990" y1="36" y2="324"/>
+    <!-- horizontal -->
+    <line y1="96"  y2="96"  x1="60" x2="1140"/>
+    <line y1="168" y2="168" x1="60" x2="1140"/>
+    <line y1="240" y2="240" x1="60" x2="1140"/>
+  </g>
+
+  <!-- Particles -->
+  <circle class="p"  cx="180" cy="72"  r="3" fill="url(#txtGrad)"/>
+  <circle class="p2" cx="1020" cy="110" r="4" fill="url(#txtGrad)"/>
+  <circle class="p3" cx="820" cy="296" r="3" fill="url(#txtGrad)"/>
+  <circle class="p4" cx="320" cy="300" r="3" fill="url(#txtGrad)"/>
+
+  <!-- Optional: local logo file (comment out if not available) -->
+  <image href="nurui-logo.png" x="70" y="96" width="88" height="88" style="border-radius:16px" />
+
+  <!-- ================ TEXT BLOCK ================ -->
+  <g transform="translate(180,118)">
+    <text class="title" x="0" y="0">Nurui UI</text>
+    <rect class="shimmer" x="0" y="-62" width="360" height="124" fill="white"/>
+    <path class="underline" d="M2 22 Q 220 34 440 22"/>
+
+    <g transform="translate(0,72)">
+      <text class="subtitle" x="0" y="0">
+        React + Next.js component library • CLI scaffolding • Live previews • TS→JS conversion
+      </text>
+    </g>
+  </g>
+
+  <!-- ================ CHIPS ================ -->
+  <g class="chip" transform="translate(180, 245)">
+    <g>
+      <rect x="0" y="-18" rx="10" ry="10" width="150" height="36"/>
+      <text x="18" y="5" fill="var(--txt)">⚡ Fast Dev</text>
+    </g>
+    <g transform="translate(170,0)">
+      <rect x="0" y="-18" rx="10" ry="10" width="212" height="36"/>
+      <text x="18" y="5" fill="var(--txt)">🎯 Type‑safe & Flexible</text>
+    </g>
+    <g transform="translate(402,0)">
+      <rect x="0" y="-18" rx="10" ry="10" width="232" height="36"/>
+      <text x="18" y="5" fill="var(--txt)">🧪 Live Component Preview</text>
+    </g>
+  </g>
+
+  <!-- ================ CTA ================ -->
+  <g class="cta" transform="translate(180, 290)">
+    <rect x="0" y="-18" rx="999" ry="999" width="250" height="36"/>
+    <text x="20" y="5" fill="#ffffff">📖 Read Docs — nurui.vercel.app</text>
+  </g>
+</svg>

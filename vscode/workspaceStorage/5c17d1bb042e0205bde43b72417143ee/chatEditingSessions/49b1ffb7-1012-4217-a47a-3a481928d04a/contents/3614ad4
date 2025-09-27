@@ -1,0 +1,137 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Star, ShoppingCart } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+interface Product {
+  id: string;
+  title: string;
+  price: number;
+  compareAtPrice?: number;
+  images: { url: string; alt?: string }[];
+  stock: number;
+}
+
+interface RecommendedProductsProps {
+  products: Product[];
+}
+
+export default function RecommendedProducts({ products }: RecommendedProductsProps) {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("bn-BD").format(amount);
+  };
+
+  const calculateDiscount = (originalPrice: number, currentPrice: number) => {
+    return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+  };
+
+  if (!products || products.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Star className="h-5 w-5" />
+            আপনার জন্য সুপারিশ
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 space-y-3">
+            <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground" />
+            <p className="text-muted-foreground">কোন পণ্য পাওয়া যায়নি</p>
+            <Button asChild>
+              <Link href="/products">পণ্য দেখুন</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 justify-between">
+          <div className="flex items-center gap-2">
+            <Star className="h-5 w-5" />
+            আপনার জন্য সুপারিশ
+          </div>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/products">সব দেখুন</Link>
+          </Button>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {products.slice(0, 3).map((product) => {
+            const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.price;
+            const discountPercent = hasDiscount 
+              ? calculateDiscount(product.compareAtPrice!, product.price)
+              : 0;
+
+            return (
+              <div key={product.id} className="flex gap-3 p-3 border rounded-lg hover:bg-accent/50 transition-colors">
+                <div className="relative flex-shrink-0">
+                  <Image
+                    src={product.images[0]?.url || "/placeholder-product.jpg"}
+                    alt={product.images[0]?.alt || product.title}
+                    width={80}
+                    height={80}
+                    className="rounded-md object-cover"
+                  />
+                  {hasDiscount && (
+                    <Badge 
+                      className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1"
+                    >
+                      -{discountPercent}%
+                    </Badge>
+                  )}
+                  {product.stock <= 5 && product.stock > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -bottom-2 -right-2 text-xs px-1"
+                    >
+                      শেষ {product.stock}
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-sm mb-1 line-clamp-2">{product.title}</h4>
+                  
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-bold text-primary">
+                      {formatCurrency(product.price)} ৳
+                    </span>
+                    {hasDiscount && (
+                      <span className="text-xs text-muted-foreground line-through">
+                        {formatCurrency(product.compareAtPrice!)} ৳
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button size="sm" className="text-xs h-8 flex-1" asChild>
+                      <Link href={`/products/${product.id}`}>
+                        দেখুন
+                      </Link>
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-xs h-8 px-2"
+                      disabled={product.stock === 0}
+                    >
+                      <ShoppingCart className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

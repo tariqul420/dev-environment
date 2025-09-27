@@ -1,0 +1,55 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
+
+services:
+  edu-genius:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: edu-genius
+
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+
+    expose:
+      - '3000'
+
+    restart: unless-stopped
+
+    networks:
+      - proxy
+      - appnet
+
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=proxy'
+
+      # ---- Router (apex) ----
+      - 'traefik.http.routers.edugenius.rule=Host(`edugenius.tariqul.dev`)'
+      - 'traefik.http.routers.edugenius.entrypoints=websecure'
+      - 'traefik.http.routers.edugenius.tls=true'
+      - 'traefik.http.routers.edugenius.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.edugenius.service=edugenius-svc'
+
+      # ---- Service ----
+      - 'traefik.http.services.edugenius-svc.loadbalancer.server.port=3000'
+      - 'traefik.http.services.edugenius-svc.loadbalancer.passhostheader=true'
+
+      # ---- www → non-www (HTTPS) ----
+      - 'traefik.http.routers.edugenius-www.rule=Host(`www.edugeniusa.com`)'
+      - 'traefik.http.routers.edugenius-www.entrypoints=websecure'
+      - 'traefik.http.routers.edugenius-www.tls=true'
+      - 'traefik.http.routers.edugenius-www.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.edugenius-www.middlewares=edugenius-redirect@docker'
+
+      # ---- Redirect middleware ----
+      - "traefik.http.middlewares.edugenius-redirect.redirectregex.regex=^https?://www\\.edugeniusa\\.com(.*)"
+      - 'traefik.http.middlewares.edugenius-redirect.redirectregex.replacement=https://edugeniusa.com$1'
+      - 'traefik.http.middlewares.edugenius-redirect.redirectregex.permanent=true'

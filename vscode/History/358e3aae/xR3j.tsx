@@ -1,0 +1,35 @@
+export const dynamic = 'force-dynamic';
+
+import DataTable from '@/components/dashboard/data-table';
+import { adminBlogsColumns } from '@/components/dashboard/table-columns';
+
+import { deleteBlogs, getBlogsForAdmin } from '@/lib/actions/blog.action';
+import { DashboardSearchParamsProps } from '@/types';
+
+export default async function Blogs({ searchParams }: DashboardSearchParamsProps) {
+  const { pageSize, pageIndex, search } = await searchParams;
+
+  const { blogs, pagination } = await getBlogsForAdmin({
+    limit: Number(pageSize || 20),
+    page: Number(pageIndex || 1),
+    search: search?.trim(),
+  });
+
+  return (
+    <section>
+      <DataTable
+        pageIndex={Number(pageIndex || '1')}
+        pageSize={Number(pageSize || '20')}
+        total={pagination?.totalItems || 0}
+        data={blogs || []}
+        columns={adminBlogsColumns || []}
+        uniqueIdProperty="_id"
+        onDeleteMany={deleteBlogs}
+        actionLink={{
+          href: '/admin/blogs/add-blog',
+          label: 'Add Blog',
+        }}
+      />
+    </section>
+  );
+}

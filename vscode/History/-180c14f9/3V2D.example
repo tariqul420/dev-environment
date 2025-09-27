@@ -1,0 +1,11 @@
+# # Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# Authentication Settings
+TOKEN_SECRET=
+TOKEN_NAME=
+
+# Database Configuration
+MONGODB_DATABASE_URL=
+MONGODB_DATABASE_PASSWORD=

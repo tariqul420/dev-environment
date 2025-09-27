@@ -1,0 +1,56 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
+
+services:
+  naturalsefa:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+
+    container_name: naturalsefa
+
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+
+    expose:
+      - "3000"
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+    restart: unless-stopped
+
+    networks:
+      - proxy
+      - appnet
+
+    labels:
+      - "traefik.enable=true"
+      # Traefik কোন নেটওয়ার্কে backend খুঁজবে—স্পষ্ট করুন
+      - "traefik.docker.network=proxy"
+
+      # Apex domain
+      - "traefik.http.routers.naturalsefa.rule=Host(`naturalsefaa.com`)"
+      - "traefik.http.routers.naturalsefa.entrypoints=websecure"
+      - "traefik.http.routers.naturalsefa.tls.certresolver=letsencrypt"
+      - "traefik.http.services.naturalsefa.loadbalancer.server.port=3000"
+
+      # www → apex redirect (HTTPS)
+      - "traefik.http.routers.naturalsefa-www.rule=Host(`www.naturalsefaa.com`)"
+      - "traefik.http.routers.naturalsefa-www.entrypoints=websecure"
+      - "traefik.http.routers.naturalsefa-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.naturalsefa-www.middlewares=redirect-to-apex@docker"
+      - "traefik.http.middlewares.redirect-to-apex.redirectregex.regex=^https?://www\\.naturalsefaa\\.com/(.*)"
+      - "traefik.http.middlewares.redirect-to-apex.redirectregex.replacement=https://naturalsefaa.com/$$1"
+      - "traefik.http.middlewares.redirect-to-apex.redirectregex.permanent=true"

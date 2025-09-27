@@ -1,0 +1,12 @@
+# Ignore configuration and environment files not needed for production
+*.env.local
+*.env.development
+*.env.test
+*.log
+
+# Ignore local files and directories
+.git
+.gitignore
+Dockerfile
+.dockerignore
+README.md

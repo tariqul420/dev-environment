@@ -1,0 +1,46 @@
+'use client';
+
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Check, Copy } from 'lucide-react';
+import { useState } from 'react';
+import { highlight } from 'sugar-high';
+
+export function CodeBlock({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  const highlighted = highlight(code);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <div className="relative my-4 rounded-md bg-zinc-100 p-4 dark:bg-zinc-900">
+      <CopyButton onCopy={handleCopy} copied={copied} />
+      <pre className="overflow-x-auto text-sm leading-relaxed">
+        <code dangerouslySetInnerHTML={{ __html: highlighted }} />
+      </pre>
+    </div>
+  );
+}
+
+function CopyButton({ onCopy, copied }: { onCopy: () => void; copied: boolean }) {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onCopy}
+            className="absolute right-3 top-3 h-7 w-7 border bg-white/80 p-0 text-muted-foreground backdrop-blur-sm hover:bg-muted dark:border-zinc-700 dark:bg-zinc-800/70 dark:hover:bg-zinc-700">
+            {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>{copied ? 'Copied!' : 'Copy to clipboard'}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}

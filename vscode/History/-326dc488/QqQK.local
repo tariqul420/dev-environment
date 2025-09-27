@@ -1,0 +1,25 @@
+# Base Url
+NEXT_PUBLIC_BASE_URL=https://tariqul.vercel.app
+
+# EmailJS
+EMAIL_USER=tariqul.developer@gmail.com
+EMAIL_PASS=jfskiwrsadurhrjf
+
+# Database
+# DATABASE_URL=mongodb+srv://tariqul-portfolio:<db_password>@tariqul-islam.mchvj.mongodb.net/tariqul-portfolio?retryWrites=true&w=majority&appName=TARIQUL-ISLAM
+# DATABASE_PASSWORD=xGbZ1QG9yUMuOoKJ
+DATABASE_URL=mongodb://localhost:27017/portfolio-next
+DATABASE_PASSWORD=
+
+
+# Next Auth
+NEXTAUTH_SECRET=755736abab449f7cb86a5eb8084dbe6fc17112571214dbe4ca6f26f81d3373888760073188b016c4019d2269abfcb4d786199bff638f99b9d82d33f8af1cc5ba
+
+# CLOUDINARY
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=dbjlihrjj
+NEXT_PUBLIC_CLOUDINARY_API_KEY=124316519517737
+CLOUDINARY_API_SECRET=B6f014Xo-l0w4ZB1MEWZn9fHV30
+NEXT_PUBLIC_CLOUDINARY_PRESET=portfolio-next
+
+# GOOGLE ANALYTICS
+NEXT_PUBLIC_GA_ID=G-BMXPD2MCN5

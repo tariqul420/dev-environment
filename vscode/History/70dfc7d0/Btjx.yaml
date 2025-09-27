@@ -1,0 +1,55 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
+
+services:
+  toolshub:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: toolshub
+
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - NEXT_TELEMETRY_DISABLED=1
+
+    expose:
+      - '3001'
+
+    restart: unless-stopped
+
+    networks:
+      - proxy
+      - appnet
+
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=proxy'
+
+      # ---- Router (apex) ----
+      - 'traefik.http.routers.portfolio.rule=Host(`tariqul.dev`)'
+      - 'traefik.http.routers.portfolio.entrypoints=websecure'
+      - 'traefik.http.routers.portfolio.tls=true'
+      - 'traefik.http.routers.portfolio.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.portfolio.service=portfolio-svc'
+
+      # ---- Service ----
+      - 'traefik.http.services.portfolio-svc.loadbalancer.server.port=3001'
+      - 'traefik.http.services.portfolio-svc.loadbalancer.passhostheader=true'
+
+      # ---- www → non-www (HTTPS) ----
+      - 'traefik.http.routers.portfolio-www.rule=Host(`www.tariqul.dev`)'
+      - 'traefik.http.routers.portfolio-www.entrypoints=websecure'
+      - 'traefik.http.routers.portfolio-www.tls=true'
+      - 'traefik.http.routers.portfolio-www.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.portfolio-www.middlewares=portfolio-redirect@docker'
+
+      # ---- Redirect middleware ----
+      - "traefik.http.middlewares.portfolio-redirect.redirectregex.regex=^https?://www\\.tariqul\\.dev(.*)"
+      - 'traefik.http.middlewares.portfolio-redirect.redirectregex.replacement=https://tariqul.dev$1'
+      - 'traefik.http.middlewares.portfolio-redirect.redirectregex.permanent=true'

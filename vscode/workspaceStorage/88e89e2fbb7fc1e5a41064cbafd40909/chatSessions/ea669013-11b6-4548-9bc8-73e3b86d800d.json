@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "requesterUsername": "tariqul420",
+  "requesterAvatarIconUri": {
+    "$mid": 1,
+    "path": "/u/174447388",
+    "scheme": "https",
+    "authority": "avatars.githubusercontent.com",
+    "query": "v=4"
+  },
+  "responderUsername": "GitHub Copilot",
+  "responderAvatarIconUri": {
+    "id": "copilot"
+  },
+  "initialLocation": "panel",
+  "requests": [],
+  "sessionId": "ea669013-11b6-4548-9bc8-73e3b86d800d",
+  "creationDate": 1751768234082,
+  "isImported": false,
+  "lastMessageDate": 1751768234082
+}

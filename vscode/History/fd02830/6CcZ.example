@@ -1,0 +1,10 @@
+# # Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# Authentication Settings
+TOKEN_SECRET=
+TOKEN_NAME=
+
+# MongoDB Database Configuration
+DATABASE_URL=postgresql://user:password@localhost:5432/mydatabase?schema=public

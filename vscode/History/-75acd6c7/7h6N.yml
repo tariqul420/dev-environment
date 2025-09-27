@@ -1,0 +1,55 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
+
+services:
+  naturalsefa:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: naturalsefa
+
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+
+    expose:
+      - "3000"
+
+    restart: unless-stopped
+
+    networks:
+      - proxy
+      - appnet
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+
+      # ---- Router (apex) ----
+      - "traefik.http.routers.naturalsefa.rule=Host(`naturalsefaa.com`)"
+      - "traefik.http.routers.naturalsefa.entrypoints=websecure"
+      - "traefik.http.routers.naturalsefa.tls=true"
+      - "traefik.http.routers.naturalsefa.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.naturalsefa.service=naturalsefa-svc"
+
+      # ---- Service ----
+      - "traefik.http.services.naturalsefa-svc.loadbalancer.server.port=3000"
+      - "traefik.http.services.naturalsefa-svc.loadbalancer.passhostheader=true"
+
+      # ---- www → non-www (HTTPS) ----
+      - "traefik.http.routers.naturalsefa-www.rule=Host(`www.naturalsefaa.com`)"
+      - "traefik.http.routers.naturalsefa-www.entrypoints=websecure"
+      - "traefik.http.routers.naturalsefa-www.tls=true"
+      - "traefik.http.routers.naturalsefa-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.naturalsefa-www.middlewares=naturalsefa-redirect@docker"
+
+      # ---- Redirect middleware ----
+      - "traefik.http.middlewares.naturalsefa-redirect.redirectregex.regex=^https?://www\\.naturalsefaa\\.com(.*)"
+      - "traefik.http.middlewares.naturalsefa-redirect.redirectregex.replacement=https://naturalsefaa.com$1"
+      - "traefik.http.middlewares.naturalsefa-redirect.redirectregex.permanent=true"

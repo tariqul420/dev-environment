@@ -1,0 +1,272 @@
+export const metadata = {
+  title: 'Deployment Guide for Express.js Application on Hostinger VPS',
+  description: 'Step-by-step guide to deploying an Express.js project (JavaScript or TypeScript) on Hostinger VPS with PM2, Nginx, HTTPS via Certbot, and GitHub CI setup.',
+  keywords: [
+    'Express.js VPS deployment',
+    'Hostinger Express.js guide',
+    'Deploy Express.js with PM2',
+    'Express.js TypeScript deployment',
+    'Nginx Express.js config',
+    'Production Express.js hosting',
+    'Secure Express.js deployment',
+    'Ubuntu Express.js deployment',
+    'Express.js Certbot HTTPS',
+    'Express.js deployment tutorial',
+  ],
+  openGraph: {
+    title: 'Deployment Guide for Express.js Application on Hostinger VPS',
+    description: 'A complete walkthrough for deploying your Express.js (JavaScript/TypeScript) project on Hostinger VPS using Nginx, PM2, and HTTPS via Let’s Encrypt.',
+    url: '[https://domain-name.com/blogs/express-js-deploy-in-vps](https://domain-name.com/blogs/express-js-deploy-in-vps)',
+    siteName: 'Tariqul Dev Blog',
+    locale: 'en_US',
+    type: 'article',
+  },
+};
+
+# Deployment Guide for Express.js Application on Hostinger VPS
+
+This guide helps you deploy an Express.js project (JavaScript or TypeScript) on a **Hostinger** VPS using **Ubuntu**, **PM2**, **NGINX**, and Let’s Encrypt HTTPS — with routing via a subdomain (e.g. `api.domain-name.com`) while keeping your main domain (`domain-name.com`) available.
+
+---
+
+## Prerequisites
+
+- Hostinger VPS (Ubuntu 22.04+)
+- GitHub repo with your Express.js project
+- Node.js v20+ and NGINX installed
+
+## Step 1: Connect & Update Server
+
+```bash
+ssh root@your-vps-ip
+sudo apt update && sudo apt upgrade -y
+```
+
+---
+
+## Step 2: Install Required Software
+
+```bash
+# Node.js
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Nginx
+sudo apt install nginx -y
+sudo systemctl enable nginx
+sudo service nginx status
+
+# PM2
+sudo npm install -g pm2
+pm2 startup
+
+# Git
+sudo apt install git -y
+
+# Certbot
+sudo apt install python3-certbot-nginx -y
+
+# Firewall
+sudo ufw enable
+sudo ufw allow 'Nginx Full'
+sudo ufw allow OpenSSH
+```
+
+---
+
+## Step 2: DNS Configuration
+
+At your domain provider, configure A/AAAA records:
+
+| Type | Name | Value    |
+| ---- | ---- | -------- |
+| A    | @    | VPS IPv4 |
+| A    | www  | VPS IPv4 |
+| AAAA | @    | VPS IPv6 |
+| AAAA | www  | VPS IPv6 |
+| A    | api  | VPS IPv4 |
+
+> **Note:** Add `A` record for api subdomain to route traffic to your Express.js app. IPv6 (`AAAA` records) are optional and should only be added if your VPS provider supports and assigns an IPv6 address.
+
+---
+
+## Step 4: Clone Project from GitHub
+
+```bash
+mkdir -p ~/apps && cd ~/apps
+git clone git@github.com:yourusername/your-repo.git
+cd your-repo
+```
+
+If private repo:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+cat ~/.ssh/id_ed25519.pub
+```
+
+Add this key to GitHub > Settings > Deploy Keys.
+
+---
+
+## Step 5: Configure Nginx
+
+Delete default config:
+
+```bash
+sudo rm /etc/nginx/sites-enabled/default
+```
+
+### Using main domain (`domain-name.com/api`)
+
+Create config:
+
+```bash
+sudo nano /etc/nginx/sites-available/domain-name.com
+```
+
+Paste:
+
+```nginx
+server {
+  listen 80;
+  server_name domain-name.com www.domain-name.com;
+
+  location /api/ {
+    proxy_pass http://localhost:3000/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+}
+```
+
+### Using subdomain (`api.domain-name.com`)
+
+Create config:
+
+```bash
+sudo nano /etc/nginx/sites-available/api.domain-name.com
+```
+
+Paste:
+
+```nginx
+server {
+  listen 80;
+  server_name api.domain-name.com www.api.domain-name.com;
+
+  location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+}
+```
+
+Enable it:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/domain-name.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/api.domain-name.com /etc/nginx/sites-enabled/domain-name.com
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+---
+
+## Step 6: Prepare Express Project
+
+```bash
+cd ~/apps/your-repo
+nano .env     # if needed
+npm install
+npm run build # if using TypeScript or Prisma
+```
+
+---
+
+## Step 7: Create PM2 Ecosystem File
+
+```bash
+nano ecosystem.config.js
+```
+
+TypeScript Example:
+
+```js
+module.exports = {
+  apps: [
+    {
+      name: 'express-app',
+      script: 'dist/server.js',
+    },
+  ],
+};
+```
+
+JavaScript Example:
+
+```js
+module.exports = {
+  apps: [
+    {
+      name: 'express-app',
+      script: 'src/server.js',
+    },
+  ],
+};
+```
+
+Start and save:
+
+```bash
+pm run build     # if TypeScript
+pm run prisma:generate # if using Prisma
+pm run prisma:migrate  # if using Prisma
+
+pm2 start ecosystem.config.js
+pm2 save
+pm2 status
+```
+
+---
+
+## Step 8: Secure with HTTPS (Certbot)
+
+```bash
+sudo certbot --nginx -d domain-name.com -d www.domain-name.com
+sudo nginx -t && sudo systemctl reload nginx
+sudo systemctl enable certbot.timer
+sudo certbot renew --dry-run
+```
+
+---
+
+## Pulling Updates from GitHub
+
+```bash
+cd ~/apps/your-repo
+git pull origin main
+npm install
+npm run build
+pm2 reload express-app
+```
+
+---
+
+## Done!
+
+Your Express.js app is now live with HTTPS, running via PM2, and served by Nginx.
+
+You can access it at:
+
+- [https://domain-name.com/api](https://domain-name.com/api)
+- [https://api.domain-name.com](https://api.domain-name.com)
+
+Happy deploying! 🚀

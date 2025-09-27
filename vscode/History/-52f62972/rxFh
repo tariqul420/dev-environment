@@ -1,0 +1,22 @@
+feat: Update interview model and add actions
+
+- Change startTime and endTime to DateTime in the Interview model.
+- Add createInterview and updateInterviewStatus actions.
+- Update Prisma client and create a new migration.
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch development
+# Your branch is up to date with 'origin/development'.
+#
+# Changes to be committed:
+#	modified:   lib/actions/interview.action.ts
+#	modified:   prisma/generated/client/edge.js
+#	modified:   prisma/generated/client/index.d.ts
+#	modified:   prisma/generated/client/index.js
+#	modified:   prisma/generated/client/package.json
+#	modified:   prisma/generated/client/schema.prisma
+#	new file:   prisma/migrations/20250707061007_update_starttime_and_endtime_type_in_interview_model/migration.sql
+#	modified:   prisma/schema.prisma
+#	modified:   types/interview.d.ts
+#

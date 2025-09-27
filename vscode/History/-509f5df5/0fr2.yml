@@ -1,0 +1,27 @@
+version: '3.9'
+
+networks:
+  proxy:
+    external: true
+
+services:
+  next-app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      container_name: next-app
+      env_file:
+        - ./.env
+      environment:
+        - NODE_ENV=production
+      expose:
+        - '3000'
+      restart: unless-stopped
+      networks:
+        - proxy
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.portfolio.rule=Host(`example.com`)'
+        - 'traefik.http.routers.portfolio.entrypoints=websecure'
+        - 'traefik.http.routers.portfolio.tls.certresolver=letsencrypt'
+        - 'traefik.http.services.portfolio.loadbalancer.server.port=3000'

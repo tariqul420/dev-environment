@@ -1,0 +1,5 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true

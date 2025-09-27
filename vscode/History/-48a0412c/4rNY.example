@@ -1,0 +1,18 @@
+# ===== Database =====
+DB_NAME=wp_app_name
+DB_USER=wp_app_user
+DB_PASS=wp_app_pass2984
+DB_ROOT_PASS=wp_root_app_root2984
+DB_HOST=app-db:3306
+
+# ===== Security =====
+FORCE_SSL_ADMIN=true
+DISALLOW_FILE_EDIT=true
+
+# ===== Choose ONE mode =====
+# MAIN DOMAIN MODE
+#DOMAIN_HOST=app.com
+#DOMAIN_HOST_WWW=www.app.com
+
+# SUBDOMAIN MODE
+SUBDOMAIN_HOST=app.example.com

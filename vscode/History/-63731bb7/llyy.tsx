@@ -1,0 +1,39 @@
+import AnimationContainer from '@/components/global/animation-container';
+import FilterBar from '@/components/global/filter-bar';
+import ProjectCard from '@/components/project-card';
+import Scroll from '@/components/scroll';
+import { getProjects } from '@/lib/actions/project.action';
+import { SearchParamsProps } from '@/types';
+import { ProjectProps } from '@/types/project';
+
+export default async function page({ searchParams }: SearchParamsProps) {
+  const { search, page } = await searchParams;
+
+  const {
+    projects = [],
+    total = 0,
+    hasNextPage = false,
+  } = await getProjects({
+    search: search?.trim(),
+    page: Number(page) || 1,
+    limit: 20,
+    sort: 'order',
+  });
+
+  return (
+    <section className="py-4">
+      <FilterBar breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Blog', href: '/blogs' }, { label: `Page ${Number(page) || 1}` }]} placeholder="Search blogs ..." />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:grid-cols-4 mt-8">
+        {projects &&
+          projects?.map((project: ProjectProps, index: number) => (
+            <AnimationContainer key={index} delay={0.2 * index}>
+              <ProjectCard project={project} />
+            </AnimationContainer>
+          ))}
+      </div>
+
+      {/* Pagination */}
+      {hasNextPage && <Scroll hasNextPage={hasNextPage} />}
+    </section>
+  );
+}

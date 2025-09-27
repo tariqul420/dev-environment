@@ -1,0 +1,77 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
+
+volumes:
+  migrain_db_data:
+  migrain_wp_data:
+
+services:
+  migrain-db:
+    image: mariadb:10.11
+    container_name: migrain-db
+    restart: unless-stopped
+    environment:
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASS}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASS}
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    volumes:
+      - migrain_db_data:/var/lib/mysql
+    networks:
+      - appnet
+
+  migrain-wp:
+    image: wordpress:php8.2-apache
+    container_name: migrain-wp
+    depends_on:
+      - migrain-db
+    restart: unless-stopped
+    environment:
+      - WORDPRESS_DB_HOST=${DB_HOST}
+      - WORDPRESS_DB_NAME=${DB_NAME}
+      - WORDPRESS_DB_USER=${DB_USER}
+      - WORDPRESS_DB_PASSWORD=${DB_PASS}
+      - FORCE_SSL_ADMIN=${FORCE_SSL_ADMIN}
+      - DISALLOW_FILE_EDIT=${DISALLOW_FILE_EDIT}
+    volumes:
+      - migrain_wp_data:/var/www/html
+      - ./php.ini:/usr/local/etc/php/conf.d/zz-site.ini
+    networks:
+      - proxy
+      - appnet
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+
+      #######################################################################
+      # (A) MAIN DOMAIN MODE
+      #######################################################################
+      # - traefik.http.routers.migrain-domain.rule=Host(`${DOMAIN_HOST}`)
+      # - traefik.http.routers.migrain-domain.entrypoints=websecure
+      # - traefik.http.routers.migrain-domain.tls=true
+      # - traefik.http.routers.migrain-domain.tls.certresolver=letsencrypt
+      # - traefik.http.routers.migrain-domain.priority=110
+      # - traefik.http.services.migrain-domain.loadbalancer.server.port=80
+
+      # (Optional) www → non-www redirect
+      # - traefik.http.routers.migrain-domain-www.rule=Host(`${DOMAIN_HOST_WWW}`)
+      # - traefik.http.routers.migrain-domain-www.entrypoints=websecure
+      # - traefik.http.routers.migrain-domain-www.tls=true
+      # - traefik.http.routers.migrain-domain-www.tls.certresolver=letsencrypt
+      # - traefik.http.routers.migrain-domain-www.middlewares=redirect-www@file
+      # - traefik.http.services.migrain-domain-www.loadbalancer.server.port=80
+
+      #######################################################################
+      # (B) SUBDOMAIN MODE
+      #######################################################################
+      # Uncomment this block if you prefer subdomain (and comment out domain block)
+      - traefik.http.routers.migrain-sub.rule=Host(`${SUBDOMAIN_HOST}`)
+      - traefik.http.routers.migrain-sub.entrypoints=websecure
+      - traefik.http.routers.migrain-sub.tls=true
+      - traefik.http.routers.migrain-sub.tls.certresolver=letsencrypt
+      - traefik.http.routers.migrain-sub.priority=110
+      - traefik.http.services.migrain-sub.loadbalancer.server.port=80

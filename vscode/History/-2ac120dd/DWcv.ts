@@ -1,0 +1,53 @@
+"use server";
+
+import nodemailer from "nodemailer";
+
+interface ContactFormData {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+}
+
+export async function sendContactEmail(data: ContactFormData) {
+  try {
+    // Create a transporter using Gmail
+    const transporter = nodemailer.createTransport({
+      host: "mail.naturalsefa.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    // Email content
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: `Natural Sefa - Contact Form`,
+      text: `
+        Name: ${data.name}
+        Email: ${data.email || "Not provided"}
+        Phone: ${data.phone}
+        Message: ${data.message}
+      `,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    return {
+      success: true,
+      message: "Thank you for contacting Natural Sefa! We'll respond soon.",
+    };
+  } catch (error) {
+    console.error(error);
+
+    throw new Error("Unable to send message. Please try again later.");
+  }
+}

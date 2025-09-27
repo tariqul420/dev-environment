@@ -1,0 +1,67 @@
+import Image from "next/image";
+import { User, Mail, Phone, MapPin } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { currentUser } from "@clerk/nextjs/server";
+
+export default async function CustomerProfileCard() {
+  const user = await currentUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const { firstName, lastName, emailAddresses, phoneNumbers, imageUrl } = user;
+  const fullName = `${firstName || ""} ${lastName || ""}`.trim() || "Customer";
+  const email = emailAddresses?.[0]?.emailAddress;
+  const phone = phoneNumbers?.[0]?.phoneNumber;
+
+  return (
+    <Card className="w-full">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <User className="h-5 w-5" />
+          Profile Information
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center space-x-4">
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt={fullName}
+              className="h-12 w-12 rounded-full object-cover"
+            />
+          )}
+          <div>
+            <h3 className="font-semibold text-lg">{fullName}</h3>
+            <Badge variant="secondary" className="text-xs">
+              Customer
+            </Badge>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {email && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Mail className="h-4 w-4" />
+              <span>{email}</span>
+            </div>
+          )}
+          
+          {phone && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Phone className="h-4 w-4" />
+              <span>{phone}</span>
+            </div>
+          )}
+          
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <MapPin className="h-4 w-4" />
+            <span>Bangladesh</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

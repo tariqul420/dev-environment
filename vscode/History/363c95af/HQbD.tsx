@@ -1,0 +1,42 @@
+import {
+  IconCircleCheck,
+  IconCircleCheckFilled,
+  IconLoader,
+  IconPackage,
+  IconTruck,
+  IconX,
+} from "@tabler/icons-react";
+
+export function getStatusColorClass(status: string) {
+  switch (status) {
+    case "delivered":
+      return "bg-green-500/10 text-green-500 dark:text-green-400";
+    case "cancelled":
+      return "bg-red-500/10 text-red-500 dark:text-red-400";
+    case "processing":
+      return "bg-blue-500/10 text-blue-500 dark:text-blue-400";
+    case "shipped":
+      return "bg-purple-500/10 text-purple-500 dark:text-purple-400";
+    case "confirmed":
+      return "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400";
+    default:
+      return "bg-muted text-muted-foreground";
+  }
+}
+
+export default function getStatusIcon(status: string) {
+  switch (status) {
+    case "delivered":
+      return <IconCircleCheckFilled className="mr-1 h-4 w-4" />;
+    case "cancelled":
+      return <IconX className="mr-1 h-4 w-4" />;
+    case "processing":
+      return <IconPackage className="mr-1 h-4 w-4" />;
+    case "shipped":
+      return <IconTruck className="mr-1 h-4 w-4" />;
+    case "confirmed":
+      return <IconCircleCheck className="mr-1 h-4 w-4" />;
+    default:
+      return <IconLoader className="mr-1 h-4 w-4" />;
+  }
+}

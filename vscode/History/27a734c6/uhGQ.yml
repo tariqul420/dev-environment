@@ -1,0 +1,11 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
+
+services:
+  edu-genius:
+    build:
+      context: .
+      dockerfile: ./dockerfile

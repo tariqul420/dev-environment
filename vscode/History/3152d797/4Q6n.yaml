@@ -1,0 +1,77 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
+
+volumes:
+  wp_web_db_data:
+  wp_web_wp_data:
+
+services:
+  wp_web-db:
+    image: mariadb:10.11
+    container_name: wp_web-db
+    restart: unless-stopped
+    environment:
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASS}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASS}
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    volumes:
+      - wp_web_db_data:/var/lib/mysql
+    networks:
+      - appnet
+
+  wp_web-wp:
+    image: wordpress:php8.2-apache
+    container_name: wp_web-wp
+    depends_on:
+      - wp_web-db
+    restart: unless-stopped
+    environment:
+      - WORDPRESS_DB_HOST=${DB_HOST}
+      - WORDPRESS_DB_NAME=${DB_NAME}
+      - WORDPRESS_DB_USER=${DB_USER}
+      - WORDPRESS_DB_PASSWORD=${DB_PASS}
+      - FORCE_SSL_ADMIN=${FORCE_SSL_ADMIN}
+      - DISALLOW_FILE_EDIT=${DISALLOW_FILE_EDIT}
+    volumes:
+      - wp_web_wp_data:/var/www/html
+      - ./php.ini:/usr/local/etc/php/conf.d/zz-site.ini
+    networks:
+      - proxy
+      - appnet
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+
+      #######################################################################
+      # (A) MAIN DOMAIN MODE
+      #######################################################################
+      # - traefik.http.routers.wp_web-domain.rule=Host(`${DOMAIN_HOST}`)
+      # - traefik.http.routers.wp_web-domain.entrypoints=websecure
+      # - traefik.http.routers.wp_web-domain.tls=true
+      # - traefik.http.routers.wp_web-domain.tls.certresolver=letsencrypt
+      # - traefik.http.routers.wp_web-domain.priority=110
+      # - traefik.http.services.wp_web-domain.loadbalancer.server.port=80
+
+      # (Optional) www → non-www redirect
+      # - traefik.http.routers.wp_web-domain-www.rule=Host(`${DOMAIN_HOST_WWW}`)
+      # - traefik.http.routers.wp_web-domain-www.entrypoints=websecure
+      # - traefik.http.routers.wp_web-domain-www.tls=true
+      # - traefik.http.routers.wp_web-domain-www.tls.certresolver=letsencrypt
+      # - traefik.http.routers.wp_web-domain-www.middlewares=redirect-www@file
+      # - traefik.http.services.wp_web-domain-www.loadbalancer.server.port=80
+
+      #######################################################################
+      # (B) SUBDOMAIN MODE
+      #######################################################################
+      # Uncomment this block if you prefer subdomain (and comment out domain block)
+      # - traefik.http.routers.wp_web-sub.rule=Host(`${SUBDOMAIN_HOST}`)
+      # - traefik.http.routers.wp_web-sub.entrypoints=websecure
+      # - traefik.http.routers.wp_web-sub.tls=true
+      # - traefik.http.routers.wp_web-sub.tls.certresolver=letsencrypt
+      # - traefik.http.routers.wp_web-sub.priority=110
+      # - traefik.http.services.wp_web-sub.loadbalancer.server.port=80

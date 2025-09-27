@@ -1,0 +1,125 @@
+'use client';
+
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { Editor } from '@tiptap/core';
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Bold,
+  Code2,
+  Columns,
+  Columns3,
+  FileCode,
+  Heading1,
+  Heading2,
+  Heading3,
+  Highlighter,
+  Italic,
+  Languages,
+  Link as LinkIcon,
+  List,
+  ListOrdered,
+  ListPlus,
+  ListX,
+  Quote,
+  Redo,
+  Strikethrough,
+  Table as TableIcon,
+  Type,
+  Underline,
+  Undo,
+} from 'lucide-react';
+import { useState } from 'react';
+import { Toggle } from '../ui/toggle';
+
+const LANGUAGES = ['javascript', 'typescript', 'json', 'html', 'css', 'bash', 'python'];
+
+export default function MenuBar({ editor }: { editor: Editor | null }) {
+  const [language, setLanguage] = useState('javascript');
+
+  if (!editor) return null;
+
+  const Options = [
+    { icon: <Heading1 className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), preesed: editor.isActive('heading', { level: 1 }) },
+    { icon: <Heading2 className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), preesed: editor.isActive('heading', { level: 2 }) },
+    { icon: <Heading3 className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), preesed: editor.isActive('heading', { level: 3 }) },
+    { icon: <Bold className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleBold().run(), preesed: editor.isActive('bold') },
+    { icon: <Italic className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleItalic().run(), preesed: editor.isActive('italic') },
+    { icon: <Underline className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleUnderline().run(), preesed: editor.isActive('underline') },
+    { icon: <Strikethrough className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleStrike().run(), preesed: editor.isActive('strike') },
+    { icon: <Highlighter className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleHighlight().run(), preesed: editor.isActive('highlight') },
+    {
+      icon: <LinkIcon className="h-4 w-4" />,
+      onClick: () => {
+        const url = window.prompt('Enter URL');
+        if (url) editor.chain().focus().setLink({ href: url }).run();
+      },
+      preesed: editor.isActive('link'),
+    },
+    { icon: <Quote className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleBlockquote().run(), preesed: editor.isActive('blockquote') },
+    { icon: <Type className="h-4 w-4" />, onClick: () => editor.chain().focus().setHorizontalRule().run() },
+    { icon: <AlignLeft className="h-4 w-4" />, onClick: () => editor.chain().focus().setTextAlign('left').run(), preesed: editor.isActive({ textAlign: 'left' }) },
+    { icon: <AlignCenter className="h-4 w-4" />, onClick: () => editor.chain().focus().setTextAlign('center').run(), preesed: editor.isActive({ textAlign: 'center' }) },
+    { icon: <AlignRight className="h-4 w-4" />, onClick: () => editor.chain().focus().setTextAlign('right').run(), preesed: editor.isActive({ textAlign: 'right' }) },
+    { icon: <List className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleBulletList().run(), preesed: editor.isActive('bulletList') },
+    { icon: <ListOrdered className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleOrderedList().run(), preesed: editor.isActive('orderedList') },
+    {
+      icon: <TableIcon className="h-4 w-4" />,
+      onClick: () => (editor.isActive('table') ? editor.chain().focus().deleteTable().run() : editor.chain().focus().insertTable({ rows: 3, cols: 2, withHeaderRow: true }).run()),
+      preesed: editor.isActive('table'),
+    },
+    { icon: <ListPlus className="h-4 w-4" />, onClick: () => editor.chain().focus().addRowAfter().run() },
+    { icon: <Columns className="h-4 w-4" />, onClick: () => editor.chain().focus().addColumnAfter().run() },
+    { icon: <ListX className="h-4 w-4" />, onClick: () => editor.chain().focus().deleteRow().run() },
+    { icon: <Columns3 className="h-4 w-4" />, onClick: () => editor.chain().focus().deleteColumn().run() },
+    { icon: <Code2 className="h-4 w-4" />, onClick: () => editor.chain().focus().toggleCode().run(), preesed: editor.isActive('code') },
+    { icon: <Undo className="h-4 w-4" />, onClick: () => editor.chain().focus().undo().run() },
+    { icon: <Redo className="h-4 w-4" />, onClick: () => editor.chain().focus().redo().run() },
+  ];
+
+  return (
+    <div className="bg-background border-border sticky top-0 z-50 mb-1 flex flex-wrap gap-1 rounded-md border border-b p-1">
+      {Options.map((option, index) => (
+        <Toggle key={index} pressed={option.preesed} onPressedChange={option.onClick}>
+          {option.icon}
+        </Toggle>
+      ))}
+
+      {/* Code Block + Language Picker */}
+      <Toggle pressed={editor.isActive('codeBlock')} onPressedChange={() => editor.chain().focus().toggleCodeBlock().run()}>
+        <FileCode className="h-4 w-4" />
+      </Toggle>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Toggle pressed={false}>
+            <Languages className="h-4 w-4" />
+          </Toggle>
+        </PopoverTrigger>
+        <PopoverContent className="w-40 p-1">
+          <Select
+            value={language}
+            onValueChange={(value) => {
+              setLanguage(value);
+              if (editor.isActive('codeBlock')) {
+                editor.chain().focus().setNode('codeBlock', { language: value }).run();
+              }
+            }}>
+            <SelectTrigger className="h-8">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              {LANGUAGES.map((lang) => (
+                <SelectItem key={lang} value={lang}>
+                  {lang}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+}

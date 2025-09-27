@@ -1,0 +1,29 @@
+export const qrCodeData = {
+  kind: "url",
+  url: "https://tariqul.dev",
+
+  text: "Scan me",
+
+  wifiSsid: "",
+  wifiPassword: "",
+  wifiAuth: "WPA",
+  wifiHidden: false,
+
+  vcFirst: "Tariqul",
+  vcLast: "Islam",
+  vcOrg: "Tools Hub",
+  vcTitle: "",
+  vcPhone: "+8801XXXXXXXXX",
+  vcEmail: "tariqul@tariqul.dev",
+  vcUrl: "https://tariqul.dev",
+
+  emailTo: "hello@example.com",
+  emailSubject: "Hello!",
+  emailBody: "This came from a QR code.",
+
+  smsTo: "+8801XXXXXXXXX",
+  smsBody: "Hi!",
+
+  waTo: "8801XXXXXXXXX",
+  waText: "Hello there 👋",
+};

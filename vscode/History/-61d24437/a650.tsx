@@ -1,0 +1,123 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { fbq, gaEvent, ttqTrack } from "@/lib/utils/analytics";
+
+type TrackItem = {
+  id: string;
+  title: string;
+  price: number;
+  qty: number;
+};
+
+type Props = {
+  mode: "direct" | "cart";
+  product:
+    | {
+        id: string;
+        title: string;
+        price: number;
+        qty: number;
+        total?: number;
+        currency?: string;
+      }
+    | {
+        items: TrackItem[];
+        total?: number;
+        currency?: string;
+      };
+};
+
+export default function InitialCheckoutTracking({ mode, product }: Props) {
+  const fired = useRef(false);
+
+  // Normalize to a list of items + totals
+  const items: TrackItem[] = Array.isArray((product as any)?.items)
+    ? (product as { items: TrackItem[] }).items
+    : [
+        {
+          id: (product as any).id,
+          title: (product as any).title,
+          price: Number((product as any).price ?? 0),
+          qty: Number((product as any).qty ?? 1),
+        },
+      ];
+
+  const currency = (product as any)?.currency ?? "BDT";
+  const computedTotal =
+    (product as any)?.total ??
+    items.reduce((sum, it) => sum + Number(it.price) * Number(it.qty), 0);
+
+  // Helpful derived values
+  const numItems = items.reduce((sum, it) => sum + Number(it.qty), 0);
+  const contentIds = items.map((it) => it.id);
+  const eventId = `initchk_${contentIds.join("_")}_${Date.now()}`;
+
+  useEffect(() => {
+    if (fired.current) return;
+    fired.current = true;
+
+    // ---------- Google Analytics (GA4) ----------
+    gaEvent("begin_checkout", {
+      category: "ecommerce",
+      label: mode, // use mode as label
+      value: computedTotal,
+      currency,
+      items: items.map((it) => ({
+        item_id: it.id,
+        item_name: it.title,
+        price: it.price,
+        quantity: it.qty,
+      })),
+    });
+
+    // ---------- Facebook Pixel ----------
+    // Use standard InitiateCheckout with contents[] for better matching
+    fbq("track", "InitiateCheckout", {
+      // For backward compatibility, still include a few single-item fields if there's only one item
+      ...(items.length === 1
+        ? {
+            content_id: items[0].id,
+            content_name: items[0].title,
+            item_price: items[0].price,
+          }
+        : {}),
+      // Preferred structure:
+      content_ids: contentIds,
+      contents: items.map((it) => ({
+        id: it.id,
+        quantity: it.qty,
+        item_price: it.price,
+      })),
+      content_type: mode === "cart" ? "cart" : "product",
+      num_items: numItems,
+      value: computedTotal,
+      currency,
+      event_id: eventId, // for dedup if you also send server events
+    });
+
+    // ---------- TikTok Pixel ----------
+    // TikTok supports both single fields and contents[]
+    ttqTrack("InitiateCheckout", {
+      ...(items.length === 1
+        ? {
+            content_id: items[0].id,
+            content_name: items[0].title,
+            quantity: items[0].qty,
+            price: items[0].price,
+          }
+        : {}),
+      contents: items.map((it) => ({
+        content_id: it.id,
+        content_name: it.title,
+        quantity: it.qty,
+        price: it.price,
+      })),
+      value: computedTotal,
+      currency,
+      event_id: eventId,
+    });
+  }, [mode, computedTotal, currency, items, contentIds, numItems, eventId]);
+
+  return null;
+}

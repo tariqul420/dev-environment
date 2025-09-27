@@ -1,0 +1,125 @@
+{
+  "version": 3,
+  "requesterUsername": "tariqul420",
+  "requesterAvatarIconUri": {
+    "$mid": 1,
+    "path": "/u/174447388",
+    "scheme": "https",
+    "authority": "avatars.githubusercontent.com",
+    "query": "v=4"
+  },
+  "responderUsername": "GitHub Copilot",
+  "responderAvatarIconUri": {
+    "id": "copilot"
+  },
+  "initialLocation": "panel",
+  "requests": [
+    {
+      "requestId": "request_48bcde7b-9785-4ed4-ad7f-5e17cf5cafe9",
+      "message": {
+        "text": "Error: Route \"/products\" used `searchParams.search`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:127:27)\n  125 |   const sp = {\n  126 |     search:\n> 127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n      |                           ^\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\nError: Route \"/products\" used `searchParams.page`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:128:31)\n  126 |     search:\n  127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n> 128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n      |                               ^\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\nError: Route \"/products\" used `searchParams.sort`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:130:27)\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n> 130 |       typeof searchParams.sort === \"string\" &&\n      |                           ^\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\n  132 |         searchParams.sort,\n  133 |       )\nError: Route \"/products\" used `searchParams.category`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:137:27)\n  135 |         : \"default\",\n  136 |     category:\n> 137 |       typeof searchParams.category === \"string\"\n      |                           ^\n  138 |         ? searchParams.category\n  139 |         : undefined,\n  140 |   };\n GET /products 200 in 909ms\n GET /offline.js 404 in 183ms\nError: Route \"/products\" used `searchParams.search`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:127:27)\n  125 |   const sp = {\n  126 |     search:\n> 127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n      |                           ^\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\nError: Route \"/products\" used `searchParams.page`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:128:31)\n  126 |     search:\n  127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n> 128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n      |                               ^\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\nError: Route \"/products\" used `searchParams.sort`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:130:27)\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n> 130 |       typeof searchParams.sort === \"string\" &&\n      |                           ^\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\n  132 |         searchParams.sort,\n  133 |       )\nError: Route \"/products\" used `searchParams.category`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:137:27)\n  135 |         : \"default\",\n  136 |     category:\n> 137 |       typeof searchParams.category === \"string\"\n      |                           ^\n  138 |         ? searchParams.category\n  139 |         : undefined,\n  140 |   };\nError: Route \"/products\" used `searchParams.search`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:127:27)\n  125 |   const sp = {\n  126 |     search:\n> 127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n      |                           ^\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\nError: Route \"/products\" used `searchParams.page`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:128:31)\n  126 |     search:\n  127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n> 128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n      |                               ^\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\nError: Route \"/products\" used `searchParams.sort`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:130:27)\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n> 130 |       typeof searchParams.sort === \"string\" &&\n      |                           ^\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\n  132 |         searchParams.sort,\n  133 |       )\nError: Route \"/products\" used `searchParams.category`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:137:27)\n  135 |         : \"default\",\n  136 |     category:\n> 137 |       typeof searchParams.category === \"string\"\n      |                           ^\n  138 |         ? searchParams.category\n  139 |         : undefined,\n  140 |   };\n GET /products 200 in 689ms\n GET /offline.js 404 in 245ms\n GET /products 200 in 1513ms\n GET /offline.js 404 in 145ms",
+        "parts": [
+          {
+            "range": {
+              "start": 0,
+              "endExclusive": 6843
+            },
+            "editorRange": {
+              "startLineNumber": 1,
+              "startColumn": 1,
+              "endLineNumber": 114,
+              "endColumn": 30
+            },
+            "text": "Error: Route \"/products\" used `searchParams.search`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:127:27)\n  125 |   const sp = {\n  126 |     search:\n> 127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n      |                           ^\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\nError: Route \"/products\" used `searchParams.page`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:128:31)\n  126 |     search:\n  127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n> 128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n      |                               ^\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\nError: Route \"/products\" used `searchParams.sort`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:130:27)\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n> 130 |       typeof searchParams.sort === \"string\" &&\n      |                           ^\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\n  132 |         searchParams.sort,\n  133 |       )\nError: Route \"/products\" used `searchParams.category`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:137:27)\n  135 |         : \"default\",\n  136 |     category:\n> 137 |       typeof searchParams.category === \"string\"\n      |                           ^\n  138 |         ? searchParams.category\n  139 |         : undefined,\n  140 |   };\n GET /products 200 in 909ms\n GET /offline.js 404 in 183ms\nError: Route \"/products\" used `searchParams.search`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:127:27)\n  125 |   const sp = {\n  126 |     search:\n> 127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n      |                           ^\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\nError: Route \"/products\" used `searchParams.page`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:128:31)\n  126 |     search:\n  127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n> 128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n      |                               ^\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\nError: Route \"/products\" used `searchParams.sort`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:130:27)\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n> 130 |       typeof searchParams.sort === \"string\" &&\n      |                           ^\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\n  132 |         searchParams.sort,\n  133 |       )\nError: Route \"/products\" used `searchParams.category`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:137:27)\n  135 |         : \"default\",\n  136 |     category:\n> 137 |       typeof searchParams.category === \"string\"\n      |                           ^\n  138 |         ? searchParams.category\n  139 |         : undefined,\n  140 |   };\nError: Route \"/products\" used `searchParams.search`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:127:27)\n  125 |   const sp = {\n  126 |     search:\n> 127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n      |                           ^\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\nError: Route \"/products\" used `searchParams.page`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:128:31)\n  126 |     search:\n  127 |       typeof searchParams.search === \"string\" ? searchParams.search : undefined,\n> 128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n      |                               ^\n  129 |     sort:\n  130 |       typeof searchParams.sort === \"string\" &&\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\nError: Route \"/products\" used `searchParams.sort`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:130:27)\n  128 |     page: typeof searchParams.page === \"string\" ? searchParams.page : undefined,\n  129 |     sort:\n> 130 |       typeof searchParams.sort === \"string\" &&\n      |                           ^\n  131 |       [\"default\", \"newest\", \"oldest\", \"price-low\", \"price-high\"].includes(\n  132 |         searchParams.sort,\n  133 |       )\nError: Route \"/products\" used `searchParams.category`. `searchParams` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis\n    at ProductsPage (app/(root)/products/page.tsx:137:27)\n  135 |         : \"default\",\n  136 |     category:\n> 137 |       typeof searchParams.category === \"string\"\n      |                           ^\n  138 |         ? searchParams.category\n  139 |         : undefined,\n  140 |   };\n GET /products 200 in 689ms\n GET /offline.js 404 in 245ms\n GET /products 200 in 1513ms\n GET /offline.js 404 in 145ms",
+            "kind": "text"
+          }
+        ]
+      },
+      "variableData": {
+        "variables": [
+          {
+            "kind": "file",
+            "value": {
+              "$mid": 1,
+              "fsPath": "/home/tariqul/Projects/natural-sefa-v2/app/(root)/products/page.tsx",
+              "external": "file:///home/tariqul/Projects/natural-sefa-v2/app/%28root%29/products/page.tsx",
+              "path": "/home/tariqul/Projects/natural-sefa-v2/app/(root)/products/page.tsx",
+              "scheme": "file"
+            },
+            "id": "file:///home/tariqul/Projects/natural-sefa-v2/app/%28root%29/products/page.tsx",
+            "name": "page.tsx"
+          }
+        ]
+      },
+      "response": [
+        {
+          "value": "The error occurs because in the latest Next.js App Router, the `searchParams` prop is now an async dynamic API and must be awaited before accessing its properties. You should change your page component to make `searchParams` an async function call.\n\nTo fix this, update your `ProductsPage` function to:\n\n```tsx\nexport default async function ProductsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {\n  const resolvedSearchParams = await searchParams;\n  // ...use resolvedSearchParams instead of searchParams...\n}\n```\n\nAnd replace all usages of `searchParams` with `resolvedSearchParams` in your function.\n\nI'll make this change for you now. ",
+          "supportThemeIcons": false,
+          "supportHtml": false,
+          "baseUri": {
+            "$mid": 1,
+            "path": "/home/tariqul/Projects/natural-sefa-v2/",
+            "scheme": "file"
+          }
+        },
+        {
+          "kind": "prepareToolInvocation",
+          "toolName": "copilot_applyPatch"
+        }
+      ],
+      "responseId": "response_cdd9cd7d-974c-4a1f-8b7b-ac0764653bfb",
+      "result": {},
+      "responseMarkdownInfo": [
+        {
+          "suggestionId": "sgt-93796dbe-ae28-4841-97a6-3082899e5d85"
+        }
+      ],
+      "followups": [],
+      "isCanceled": true,
+      "agent": {
+        "extensionId": {
+          "value": "GitHub.copilot-chat",
+          "_lower": "github.copilot-chat"
+        },
+        "extensionVersion": "0.31.2",
+        "publisherDisplayName": "GitHub",
+        "extensionPublisherId": "GitHub",
+        "extensionDisplayName": "GitHub Copilot Chat",
+        "id": "github.copilot.editsAgent",
+        "description": "Edit files in your workspace in agent mode",
+        "when": "config.chat.agent.enabled",
+        "metadata": {
+          "themeIcon": {
+            "id": "tools"
+          },
+          "hasFollowups": false,
+          "supportIssueReporting": false
+        },
+        "name": "agent",
+        "fullName": "GitHub Copilot",
+        "isDefault": true,
+        "locations": [
+          "panel"
+        ],
+        "modes": [
+          "agent"
+        ],
+        "slashCommands": [
+          {
+            "name": "list"
+          }
+        ],
+        "disambiguation": []
+      },
+      "contentReferences": [],
+      "codeCitations": [],
+      "timestamp": 1758814034937,
+      "modelId": "copilot/gpt-4.1"
+    }
+  ],
+  "sessionId": "b4432189-0b9c-4ede-9a9b-8b58e6a480fa",
+  "creationDate": 1758207981628,
+  "isImported": false,
+  "lastMessageDate": 1758814034937,
+  "customTitle": "Next.js searchParams async handling error"
+}

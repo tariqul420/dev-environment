@@ -1,0 +1,26 @@
+import { NextApiRequest, NextApiResponse } from "next";
+import { Server } from "socket.io";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (!res.socket.server.io) {
+    const io = new Server(req.socket.server, {
+      path: "/api/socketio",
+      cors: { origin: "*" },
+    });
+
+    (globalThis as any).io = io;
+    res.socket.server.io = io;
+
+    io.on("connection", (socket) => {
+      console.log("Socket.io connected:', socket.id");
+    });
+  }
+
+  res.end();
+}

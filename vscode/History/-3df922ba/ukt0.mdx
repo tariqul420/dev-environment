@@ -1,0 +1,190 @@
+export const metadata = {
+  title: 'Domain DNS Transfer: Hostinger to Cloudflare',
+  description: 'Step-by-step guide to transferring your domain DNS from Hostinger to Cloudflare. Optimize for performance, security, and SSL with full Next.js compatibility.',
+  keywords: [
+    'Cloudflare DNS setup',
+    'Hostinger nameserver change',
+    'Next.js Cloudflare integration',
+    'Cloudflare SSL setup',
+    'Hostinger to Cloudflare transfer',
+    'Cloudflare speed optimization',
+    'Cloudflare for Next.js',
+    'Free SSL with Cloudflare',
+    'Cloudflare caching settings',
+    'DNS migration tutorial',
+  ],
+  openGraph: {
+    title: 'Domain DNS Transfer: Hostinger to Cloudflare',
+    description: 'Learn how to transfer your domain’s DNS from Hostinger to Cloudflare for enhanced security, faster load speed, and optimized Next.js deployment.',
+    url: 'https://yourdomain.com/blogs/domain-dns-cloudflare',
+    siteName: 'Tariqul Dev Blog',
+    locale: 'en_US',
+    type: 'article',
+  },
+};
+
+# Domain DNS Transfer: Hostinger to Cloudflare (Next.js Friendly)
+
+This guide will help you move your domain's DNS from Hostinger to Cloudflare, configure optimal SSL/TLS and performance settings, and ensure compatibility with modern applications.
+
+---
+
+## Benefits of Using Cloudflare DNS (Recommended)
+
+| Feature                       | Cloudflare DNS         | Hostinger DNS        |
+| ----------------------------- | ---------------------- | -------------------- |
+| Free SSL                      | ✅ Yes (Universal SSL) | ❌ No (manual setup) |
+| DDOS Protection               | ✅ Built-in            | ❌ None              |
+| CDN / Global Cache            | ✅ Enabled             | ❌ Not available     |
+| IP Masking / Firewall         | ✅ Available           | ❌ No                |
+| Auto Performance Optimization | ✅ Brotli, Minify      | ❌ Basic only        |
+| DNS Propagation Speed         | ✅ Fast                | ❌ Slower            |
+| Analytics and Rate Limiting   | ✅ Advanced            | ❌ Limited           |
+| Best for SEO and Production   | ✅ Highly Recommended  | ❌ Not optimal       |
+
+**Recommendation**: Always use Cloudflare DNS for production websites. It’s faster, more secure, and more reliable.
+
+---
+
+## 1. Create a Free Cloudflare Account
+
+- Visit: https://dash.cloudflare.com
+- Sign up using your Gmail or email account
+
+---
+
+## 2. Add Your Site to Cloudflare
+
+- Click "+ Add a Site"
+- Enter your domain (e.g. naturalsefaa.com)
+- Choose the Free Plan
+
+---
+
+## 3. Import or Configure DNS Records
+
+Cloudflare will attempt to auto-import records from Hostinger. If not, add manually:
+
+| Type | Name | Value    |
+| ---- | ---- | -------- |
+| A    | @    | VPS IPv4 |
+| A    | www  | VPS IPv4 |
+| AAAA | @    | VPS IPv6 |
+| AAAA | www  | VPS IPv6 |
+
+Make sure the Proxy status (orange cloud) is ON to enable Cloudflare protection.
+
+---
+
+## 4. Update Hostinger Nameservers
+
+Cloudflare will provide nameservers like:
+
+```
+josh.ns.cloudflare.com
+lola.ns.cloudflare.com
+```
+
+1. Login to Hostinger
+2. Go to Domains > DNS / Nameservers
+3. Select Custom Nameservers
+4. Paste Cloudflare's nameservers
+5. Save and wait for propagation (usually 15 minutes to 12 hours)
+
+Check propagation using https://dnschecker.org
+
+---
+
+## 5. Remove Hostinger Default Nameservers
+
+If your domain was using Hostinger’s default nameservers:
+
+```
+ns1.dns-parking.com
+ns2.dns-parking.com
+```
+
+Make sure to remove these from your Hostinger domain panel and only use the nameservers provided by Cloudflare.
+
+---
+
+## 6. Configure SSL on Cloudflare
+
+Go to SSL/TLS > Overview:
+
+- SSL Mode: Full (strict)
+- Always Use HTTPS: Enabled
+- Automatic HTTPS Rewrites: Enabled
+- TLS 1.3: Enabled
+- Minimum TLS Version: 1.2
+
+Note: If you're using Full (strict), your VPS must have Let's Encrypt or a valid SSL certificate installed.
+
+---
+
+## 7. Performance Optimization
+
+Navigate to Speed > Optimization:
+
+| Option                         | Status   |
+| ------------------------------ | -------- |
+| Auto Minify (HTML/CSS/JS)      | On       |
+| Brotli Compression             | On       |
+| Rocket Loader (JS Boost)       | Optional |
+| Early Hints                    | Enabled  |
+| Enhanced HTTP/2 Prioritization | On       |
+
+---
+
+## 8. Caching Configuration
+
+Go to Caching > Configuration:
+
+- Browser Cache TTL: 1 hour or 4 hours
+- Always Online: Enabled
+- Do not enable "Cache Everything" if your application uses SSR or ISR
+
+Important for Next.js users: SSR/ISR depends on dynamic rendering. Avoid full-page caching to preserve reactivity.
+
+---
+
+## 9. Security Settings
+
+Cloudflare > Security > Settings:
+
+- DDoS Protection: Enabled
+- Bot Fight Mode: Enabled
+- IP Access Rules: Optional for geo-blocking
+
+---
+
+## 10. Verify DNS and Proxy Activation
+
+Use the terminal:
+
+```bash
+dig yourdomain.com
+```
+
+The IP in the response should match a Cloudflare IP (e.g. 104.21.x.x), confirming that proxy is active.
+
+---
+
+## Notes for Next.js Users
+
+- Compatible with App Router, SSG, SSR, and API routes
+- Full (strict) SSL mode requires active SSL on your server
+- Do not use "Cache Everything" page rules in Cloudflare if using dynamic rendering
+- Cloudflare acts as a CDN, DDoS filter, and TLS endpoint. Your backend handles rendering
+
+---
+
+## Success!
+
+Your domain is now:
+
+- Accelerated with global CDN
+- Protected by HTTPS and Cloudflare DDoS tools
+- Optimized for performance and modern web app frameworks
+
+You are ready to deploy confidently using Cloudflare and Next.js together.

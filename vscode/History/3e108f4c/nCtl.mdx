@@ -1,0 +1,223 @@
+export const metadata = {
+  title: 'Deployment Guide for Next.js Application on Hostinger VPS',
+  description: 'Step-by-step guide to deploying a Next.js 14+ App Router project on Hostinger VPS. Learn how to configure PM2, Nginx, and secure your setup.',
+  keywords: [
+    'Next.js VPS deployment',
+    'Hostinger Next.js guide',
+    'Deploy Next.js with PM2',
+    'Next.js App Router VPS setup',
+    'Nginx Next.js config',
+    'Production Next.js hosting',
+    'Secure Next.js deployment',
+    'Ubuntu Next.js deployment',
+    'Next.js server-side deployment',
+    'Next.js deployment tutorial',
+  ],
+  openGraph: {
+    title: 'Deployment Guide for Next.js Application on Hostinger VPS',
+    description: 'A detailed deployment guide for hosting your production-grade Next.js application on Hostinger VPS using Ubuntu, PM2, and Nginx.',
+    url: '[https://domain-name.com/blogs/next-js-deploy-in-vps](https://domain-name.com/blogs/next-js-deploy-in-vps)',
+    siteName: 'Tariqul Dev Blog',
+    locale: 'en_US',
+    type: 'article',
+  },
+};
+
+# Deployment Guide for Next.js Application on Hostinger VPS
+
+> Host your Next.js 14+ App Router project on Hostinger VPS with NGINX, PM2, and HTTPS. Secure and production-ready.
+
+## Prerequisites
+
+- Hostinger VPS (Ubuntu 22.04+)
+- Domain (e.g. `domain-name.com`)
+- GitHub repo with your Next.js project
+- Node.js v20+ and NGINX installed
+
+---
+
+## Step 1: Connect & Update Server
+
+```bash
+ssh root@your-vps-ip
+sudo apt update && sudo apt upgrade -y
+```
+
+---
+
+## Step 2: Install Required Software
+
+```bash
+# Node.js
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Nginx
+sudo apt install nginx -y
+sudo systemctl enable nginx
+sudo service nginx status
+
+# PM2
+sudo npm install -g pm2
+pm2 startup
+
+# Git
+sudo apt install git -y
+
+# Certbot
+sudo apt install python3-certbot-nginx -y
+
+# Firewall
+sudo ufw enable
+sudo ufw allow 'Nginx Full'
+sudo ufw allow OpenSSH
+```
+
+---
+
+## Step 2: DNS Configuration
+
+At your domain provider, configure A/AAAA records:
+
+| Type | Name | Value    |
+| ---- | ---- | -------- |
+| A    | @    | VPS IPv4 |
+| A    | www  | VPS IPv4 |
+| AAAA | @    | VPS IPv6 |
+| AAAA | www  | VPS IPv6 |
+
+> **Note:** IPv6 (AAAA records) is optional — only add them if your VPS provider supports and assigns an IPv6 address.
+
+---
+
+## Step 3: Clone Next.js Project
+
+```bash
+mkdir -p ~/apps && cd ~/apps
+git clone git@github.com:yourusername/your-next-app.git
+cd your-next-app
+```
+
+If private repo:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+cat ~/.ssh/id_ed25519.pub
+```
+
+Add this key to GitHub > Settings > Deploy Keys.
+
+Set environment variables:
+
+```bash
+nano .env
+```
+
+Install and build:
+
+```bash
+npm install
+npm run build
+```
+
+---
+
+## Step 4: Configure PM2 for Next.js
+
+Create `ecosystem.config.js`:
+
+```js
+module.exports = {
+  apps: [
+    {
+      name: 'next-app',
+      script: './node_modules/next/dist/bin/next',
+      args: 'start -p 3000',
+      env: {
+        NODE_ENV: 'production',
+      },
+    },
+  ],
+};
+```
+
+Start and save:
+
+```bash
+pm2 start ecosystem.config.js
+pm2 save
+pm2 status
+```
+
+---
+
+## Step 5: Configure NGINX
+
+```bash
+sudo nano /etc/nginx/sites-available/domain-name.com
+```
+
+Paste config:
+
+```nginx
+server {
+  listen 80;
+  server_name domain-name.com www.domain-name.com;
+
+  location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+}
+```
+
+Enable and test:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/domain-name.com /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+---
+
+## Step 6: Setup HTTPS with Certbot
+
+```bash
+sudo apt install python3-certbot-nginx -y
+sudo certbot --nginx -d domain-name.com -d www.domain-name.com
+
+# Reload and verify
+sudo nginx -t
+sudo systemctl reload nginx
+
+# Auto-renew
+sudo systemctl enable certbot.timer
+sudo certbot renew --dry-run
+```
+
+---
+
+## Step 7: Deploy Updates
+
+```bash
+cd ~/apps/your-next-app
+git pull origin main
+npm install
+npm run build
+pm2 reload next-app
+```
+
+---
+
+## You’re Live!
+
+- Next.js app runs on PM2
+- Served via NGINX reverse proxy
+- HTTPS enabled with Certbot
+
+🎉 Congratulations on a secure, production-ready deployment!

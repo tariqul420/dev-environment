@@ -1,0 +1,47 @@
+volumes:
+  mongo_data:
+  mongo_backups:
+
+networks:
+  appnet:
+    external: true
+  internal:
+    driver: bridge
+
+services:
+  mongodb:
+    image: mongo:8.0
+    container_name: mongodb
+    restart: unless-stopped
+    env_file: .env
+    command: ['--auth'] # enable authentication
+    networks:
+      - appnet
+      - internal
+    volumes:
+      - mongo_data:/data/db
+      - mongo_backups:/backups
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    #    ports:
+    #     - "27017:27017"
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'mongosh -u "$${MONGO_INITDB_ROOT_USERNAME}" -p "$${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase admin --quiet --eval ''db.adminCommand({ ping: 1 }).ok'' | grep 1 >/dev/null',
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    ulimits:
+      nofile:
+        soft: 64000
+        hard: 64000
+    environment:
+      - TZ=Asia/Dhaka
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '5'

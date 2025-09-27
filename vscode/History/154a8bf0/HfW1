@@ -1,0 +1,16 @@
+refactor(theme): Simplify theme handling and mode toggle
+
+- Removes the "system" theme option from the UI, making the `ModeToggle` component a direct light/dark switcher.
+- Simplifies theme logic in `ClerkProvider` and `ToasterProvider` to reflect the removal of the "system" theme option.
+- Enables the `richColors` prop on the `Toaster` component for more visually distinct toast notifications.
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch development
+# Your branch is up to date with 'origin/development'.
+#
+# Changes to be committed:
+#	modified:   components/mode-toggle.tsx
+#	modified:   components/providers/clerk-provider.tsx
+#	modified:   components/providers/toaster-provider.tsx
+#

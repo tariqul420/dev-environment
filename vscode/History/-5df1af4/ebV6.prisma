@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum userRole {
+  admin
+  recruiter
+  candidate
+}
+
+enum Status {
+  scheduled
+  ongoing
+  completed
+  cancelled
+}
+
+model User {
+  id             String      @id @default(uuid())
+  clerkId        String      @unique
+  email          String      @unique
+  name           String
+  role           userRole    @default(candidate)
+  profilePicture String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  interviews     Interview[] @relation("CandidateInterviews")
+  comments       Comment[]
+
+  @@index([email, clerkId])
+  @@map("users")
+}
+
+model Interview {
+  id             String    @id @default(uuid())
+  title          String
+  description    String?
+  startTime      Int
+  endTime        Int?
+  status         Status    @default(scheduled)
+  streamCallId   String
+  candidateId    String
+  candidate      User      @relation("CandidateInterviews", fields: [candidateId], references: [id])
+  interviewerIds String[]
+  comments       Comment[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([candidateId, streamCallId])
+  @@map("interviews")
+}
+
+model Comment {
+  id            String    @id @default(uuid())
+  content       String
+  rating        Float
+  interviewerId String
+  interviewer   User      @relation(fields: [interviewerId], references: [id])
+  interviewId   String
+  interview     Interview @relation(fields: [interviewId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([interviewerId, interviewId])
+  @@map("comments")
+}

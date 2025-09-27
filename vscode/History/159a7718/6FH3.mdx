@@ -1,0 +1,263 @@
+# Essential A to Z Command Guide for MongoDB, PostgreSQL, Linux & Git on Ubuntu VPS
+
+## Table of Contents
+
+- [MongoDB Commands](#mongodb-commands-a-to-z)
+- [PostgreSQL Commands](#postgresql-commands-a-to-z)
+- [Linux (Ubuntu) Commands](#linux-ubuntu-commands-a-to-z)
+- [Git Commands](#git-commands-a-to-z)
+- [Server Management](#server-management)
+- [Useful Tools to Install](#useful-tools-to-install-on-ubuntu)
+- [Other Essentials](#other-essentials)
+
+## MongoDB Commands (A to Z)
+
+### Database Operations
+
+```bash
+# Connect to MongoDB shell
+mongosh
+
+# Switch or create a database
+use your_db_name
+
+# Show all databases
+show dbs
+
+# Show collections in current DB
+show collections
+```
+
+### CRUD (Create, Read, Update, Delete)
+
+```js
+// Insert one document
+db.users.insertOne({ name: 'John', age: 30 });
+
+// Insert many
+db.users.insertMany([{ name: 'A' }, { name: 'B' }]);
+
+// Read all documents
+db.users.find();
+
+// Filtered query
+db.users.find({ name: 'John' });
+
+// Update document
+db.users.updateOne({ name: 'John' }, { $set: { age: 31 } });
+
+// Delete one document
+db.users.deleteOne({ name: 'John' });
+
+// Delete many documents
+db.users.deleteMany({});
+```
+
+### Indexes and Users
+
+```js
+// Create index
+db.users.createIndex({ name: 1 });
+
+// Create new user
+db.createUser({
+  user: 'admin',
+  pwd: 'securepassword',
+  roles: [{ role: 'readWrite', db: 'your_db_name' }],
+});
+```
+
+---
+
+## PostgreSQL Commands (A to Z)
+
+### Login and Setup
+
+```bash
+# Login to postgres
+psql -U postgres
+
+# List all databases
+\l
+
+# Connect to a database
+\c your_db
+
+# List tables
+\dt
+```
+
+### CRUD SQL
+
+```sql
+-- Create table
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name TEXT,
+  age INT
+);
+
+-- Insert
+INSERT INTO users (name, age) VALUES ('John', 30);
+
+-- Select
+SELECT * FROM users;
+
+-- Update
+UPDATE users SET age = 31 WHERE name = 'John';
+
+-- Delete
+DELETE FROM users WHERE name = 'John';
+```
+
+### Admin & Users
+
+```sql
+-- Create user
+CREATE USER myuser WITH PASSWORD 'mypassword';
+
+-- Grant privileges
+GRANT ALL PRIVILEGES ON DATABASE your_db TO myuser;
+```
+
+---
+
+## Linux (Ubuntu) Commands (A to Z)
+
+### Navigation
+
+```bash
+pwd                 # Show current directory
+ls                  # List files/folders
+cd folder_name      # Change directory
+cd ..               # Go back one directory
+```
+
+### File Handling
+
+```bash
+touch file.txt                # Create empty file
+mkdir my_folder               # Create folder
+cp file.txt copy.txt          # Copy file
+mv file.txt folder/           # Move file
+rm file.txt                   # Remove file
+rm -r folder_name             # Delete folder
+```
+
+### System Info
+
+```bash
+whoami              # Current user
+uname -a            # System info
+df -h               # Disk usage
+free -m             # RAM usage
+uptime              # System uptime
+```
+
+### Networking
+
+```bash
+ip a                        # Show IP addresses
+ping google.com             # Ping test
+netstat -tulpn              # Listening ports
+curl ifconfig.me            # Public IP
+```
+
+### Package Management
+
+```bash
+sudo apt update             # Update package list
+sudo apt upgrade            # Upgrade packages
+sudo apt install nginx      # Install a package
+sudo apt remove nginx       # Remove a package
+```
+
+### Permissions
+
+```bash
+chmod +x file.sh            # Make script executable
+chown user:user file        # Change ownership
+sudo -i                     # Switch to root
+```
+
+---
+
+## Git Commands (A to Z)
+
+### Project Setup
+
+```bash
+git init                            # Initialize git repo
+git clone https://url.com/project  # Clone repo
+git remote add origin URL          # Add remote
+```
+
+### Committing Changes
+
+```bash
+git status              # Show changes
+git add .               # Stage all changes
+git commit -m "Message" # Commit
+```
+
+### Branching
+
+```bash
+git branch                     # List branches
+git checkout -b new-branch     # Create and switch
+git checkout main              # Switch branch
+git merge branch-name          # Merge branch
+```
+
+### Push & Pull
+
+```bash
+git push -u origin main        # Push to main
+git pull origin main           # Pull latest
+```
+
+---
+
+## Server Management
+
+### Services
+
+```bash
+sudo systemctl start nginx      # Start service
+sudo systemctl stop nginx       # Stop service
+sudo systemctl restart nginx    # Restart service
+sudo systemctl status nginx     # Service status
+```
+
+### Crontab (Scheduled Jobs)
+
+```bash
+crontab -e                     # Edit cron jobs
+* * * * * /path/to/script.sh   # Every minute
+```
+
+---
+
+## Useful Tools to Install on Ubuntu
+
+```bash
+sudo apt install git
+sudo apt install curl
+sudo apt install build-essential
+sudo apt install nodejs npm
+sudo apt install mongodb
+sudo apt install postgresql
+```
+
+---
+
+## Other Essentials
+
+```bash
+history                 # Show all previous commands
+alias gs="git status"   # Create alias
+reboot                  # Reboot server
+shutdown now            # Power off server
+```
+
+> Bookmark this guide for your day-to-day DevOps, Server, and Backend needs!

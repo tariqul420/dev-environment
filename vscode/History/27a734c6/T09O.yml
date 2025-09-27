@@ -1,0 +1,9 @@
+networks:
+  proxy:
+    external: true
+  appnet:
+    external: true
+
+services:
+  edu-genius:
+    build: path

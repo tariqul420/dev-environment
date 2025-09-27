@@ -1,0 +1,142 @@
+<!-- banner.svg -->
+<svg width="1200" height="360" viewBox="0 0 1200 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root { --bg0:#0b0b11; --bg1:#121226; --grad1:#8e79ff; --grad2:#fe8bbb; --muted:#b8b8d9; }
+    @media (prefers-color-scheme: light) {
+      :root { --bg0:#ffffff; --bg1:#f7f7ff; --grad1:#6c5ce7; --grad2:#ff7675; --muted:#5f5f7a; }
+    }
+
+    .bg {
+      fill: url(#bgGrad);
+    }
+    .grid line {
+      stroke: rgba(255,255,255,0.08);
+      stroke-width: 1;
+    }
+    .title {
+      font: 700 64px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      letter-spacing: 0.4px;
+      fill: url(#txtGrad);
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,0.35));
+    }
+    .subtitle {
+      font: 500 20px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter;
+      fill: var(--muted);
+    }
+    .chip {
+      font: 600 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Inter;
+    }
+    .chip rect {
+      fill: rgba(255,255,255,0.08);
+      stroke: rgba(255,255,255,0.18);
+    }
+
+    /* Shimmer on text */
+    .shimmer {
+      mask: url(#shine);
+      -webkit-mask: url(#shine);
+      animation: slide 3.2s linear infinite;
+    }
+    @keyframes slide {
+      0% { transform: translateX(-40%); }
+      100% { transform: translateX(140%); }
+    }
+
+    /* Soft floating particles */
+    .p { opacity: .25; animation: float 8s ease-in-out infinite; }
+    .p2 { animation-delay: -2s; }
+    .p3 { animation-delay: -4s; }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Gradient pulse underline */
+    .underline {
+      stroke: url(#txtGrad);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 12px rgba(142,121,255,.65));
+      animation: pulse 2.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: .55 }
+      50% { opacity: 1 }
+    }
+  </style>
+
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1200" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--bg0)"/>
+      <stop offset="1" stop-color="var(--bg1)"/>
+    </linearGradient>
+
+    <linearGradient id="txtGrad" x1="0" y1="0" x2="100%" y2="0">
+      <stop offset="0" stop-color="var(--grad1)"/>
+      <stop offset="1" stop-color="var(--grad2)"/>
+    </linearGradient>
+
+    <!-- Shimmer mask -->
+    <mask id="shine">
+      <rect x="0" y="0" width="1200" height="360" fill="black"/>
+      <rect x="0" y="0" width="280" height="360" fill="white">
+        <animate attributeName="x" from="-280" to="1200" dur="3.2s" repeatCount="indefinite"/>
+      </rect>
+    </mask>
+  </defs>
+
+  <!-- Background -->
+  <rect class="bg" x="0" y="0" width="1200" height="360" rx="28"/>
+
+  <!-- Subtle grid -->
+  <g class="grid">
+    <!-- vertical -->
+    <line x1="90" x2="90" y1="30" y2="330"/>
+    <line x1="240" x2="240" y1="30" y2="330"/>
+    <line x1="390" x2="390" y1="30" y2="330"/>
+    <line x1="540" x2="540" y1="30" y2="330"/>
+    <line x1="690" x2="690" y1="30" y2="330"/>
+    <line x1="840" x2="840" y1="30" y2="330"/>
+    <line x1="990" x2="990" y1="30" y2="330"/>
+    <!-- horizontal -->
+    <line y1="80" y2="80" x1="60" x2="1140"/>
+    <line y1="160" y2="160" x1="60" x2="1140"/>
+    <line y1="240" y2="240" x1="60" x2="1140"/>
+  </g>
+
+  <!-- Particles -->
+  <circle class="p"  cx="180" cy="70"  r="3" fill="url(#txtGrad)"/>
+  <circle class="p2" cx="1020" cy="110" r="4" fill="url(#txtGrad)"/>
+  <circle class="p3" cx="780" cy="300" r="3" fill="url(#txtGrad)"/>
+
+  <!-- Logo (optional) -->
+  <image href="nurui-logo.png" x="70" y="95" width="90" height="90" style="border-radius:16px" />
+
+  <!-- Text -->
+  <g transform="translate(180,115)">
+    <text class="title" x="0" y="0">Nurui UI</text>
+    <rect class="shimmer" x="0" y="-60" width="340" height="120" fill="white" opacity="0.12"/>
+    <path class="underline" d="M2 18 Q 220 28 420 18"/>
+    <text class="subtitle" x="0" y="72">
+      React + Next.js based UI component library • CLI scaffolding • Live previews
+    </text>
+  </g>
+
+  <!-- Chips -->
+  <g transform="translate(180, 240)" class="chip">
+    <g>
+      <rect x="0" y="-18" rx="10" ry="10" width="150" height="36"/>
+      <text x="18" y="6" fill="white">⚡ Fast Dev</text>
+    </g>
+    <g transform="translate(170,0)">
+      <rect x="0" y="-18" rx="10" ry="10" width="210" height="36"/>
+      <text x="18" y="6" fill="white">🎯 Type-safe & Flexible</text>
+    </g>
+    <g transform="translate(400,0)">
+      <rect x="0" y="-18" rx="10" ry="10" width="230" height="36"/>
+      <text x="18" y="6" fill="white">🧪 Live Component Preview</text>
+    </g>
+  </g>
+</svg>

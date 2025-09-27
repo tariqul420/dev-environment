@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum userRole {
+  admin
+  recruiter
+  candidate
+}
+
+enum Status {
+  scheduled
+  ongoing
+  completed
+  cancelled
+}
+
+model User {
+  id String @id @default(uuid())
+  clerkId String @unique
+  email String @unique
+  name String
+  role userRole @default(candidate)
+  profilePicture String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("users")
+  @@index([email, clerkId])
+}
+
+model Interview {
+  id String @id @default(uuid())
+  title String
+  description String?
+  startTime Int 
+  endTime Int?
+  status Status @default(scheduled)
+  streamCallId String
+  candidate User @relation("Candidate")
+  candidateId String
+  interviewerIds String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("interviews")
+  @@index([candidateId, streamCallId])
+}
+
+model Comment {
+  id String @id @default(uuid())
+  content String
+  rating Float
+  interviewerId String
+  interviewId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("comments")
+  @@index([interviewerId])
+}
