@@ -60,9 +60,16 @@ if ! command -v oh-my-posh >/dev/null 2>&1; then
   fi
   set -e
 fi
+
+# Restore Oh My Posh themes
+say "Restoring Oh My Posh themes..."
 mkdir -p ~/.poshthemes
 if [ -d "${SCRIPT_DIR}/posh/themes" ]; then
   rsync -a "${SCRIPT_DIR}/posh/themes/" ~/.poshthemes/
+  ok "Custom posh themes restored to ~/.poshthemes/"
+else
+  # Download default themes if custom themes not found
+  oh-my-posh get themes --output ~/.poshthemes/ 2>/dev/null || warn "Could not download default themes"
 fi
 
 say "Installing FiraCode / Nerd fonts (for prompt glyphs)..."
@@ -216,6 +223,46 @@ else
   ok "Google Chrome already installed"
 fi
 
+# Avro Bangla Keyboard
+say "Installing Avro Bangla Keyboard..."
+if ! dpkg -l | grep -q "ibus-avro" && ! command -v avro >/dev/null 2>&1; then
+  set +e
+  # Install ibus and dependencies first
+  sudo apt install -y ibus ibus-gtk ibus-gtk3 im-config
+  
+  # Try to install ibus-avro from repository
+  sudo apt install -y ibus-avro
+  if [ $? -eq 0 ]; then
+    ok "Avro Bangla Keyboard (ibus-avro) installed successfully"
+  else
+    warn "APT installation failed, trying to download DEB package..."
+    # Fallback: Download and install manually
+    AVRO_DEB="ibus-avro_1.2.1-1_all.deb"
+    if wget -qO "$AVRO_DEB" "http://archive.ubuntu.com/ubuntu/pool/universe/i/ibus-avro/ibus-avro_1.2.1-1_all.deb"; then
+      sudo apt install -y ./"$AVRO_DEB"
+      rm -f "$AVRO_DEB"
+      ok "Avro Bangla Keyboard installed via DEB package"
+    else
+      warn "Failed to download Avro DEB package, trying alternative..."
+      # Try installing OpenBangla Keyboard as alternative
+      sudo add-apt-repository -y ppa:samoilov-lex/openbangla-keyboard 2>/dev/null || true
+      sudo apt update
+      sudo apt install -y openbangla-keyboard || warn "Avro Bangla Keyboard installation failed completely"
+    fi
+  fi
+  
+  # Configure ibus
+  if command -v ibus >/dev/null 2>&1; then
+    ibus-daemon -drx 2>/dev/null || true
+    ibus restart 2>/dev/null || true
+    ok "IBus configured for Bangla input"
+    warn "📝 Post-installation: Go to Settings > Region & Language > Input Sources to add Bangla (Avro) keyboard"
+  fi
+  set -e
+else
+  ok "Avro Bangla Keyboard already installed"
+fi
+
 # Restore dotfiles/configs
 say "Restoring dotfiles & configs..."
 mkdir -p ~/.config ~/.themes ~/.icons
@@ -234,10 +281,12 @@ command -v fish >/dev/null 2>&1 && echo "🟢 Fish Shell: Installed" || echo "�
 command -v oh-my-posh >/dev/null 2>&1 && echo "🟢 Oh My Posh: Installed" || echo "🔴 Oh My Posh: Failed"
 command -v firefox >/dev/null 2>&1 && echo "🟢 Firefox: Installed" || echo "🔴 Firefox: Failed"
 command -v google-chrome >/dev/null 2>&1 && echo "🟢 Google Chrome: Installed" || echo "🔴 Google Chrome: Failed"
+(dpkg -l | grep -q "ibus-avro" || command -v openbangla-keyboard >/dev/null 2>&1) && echo "🟢 Avro Bangla Keyboard: Installed" || echo "🔴 Avro Bangla Keyboard: Failed"
 command -v mongodb-compass >/dev/null 2>&1 && echo "🟢 MongoDB Compass: Installed" || echo "🔴 MongoDB Compass: Failed"
 (command -v pgadmin4 >/dev/null 2>&1 || command -v pgadmin4-desktop >/dev/null 2>&1) && echo "🟢 pgAdmin 4: Installed" || echo "🔴 pgAdmin 4: Failed"
-[ -d ~/.themes ] && echo "🟢 Themes: Restored" || echo "🔴 Themes: Not found"
-[ -d ~/.icons ] && echo "🟢 Icons: Restored" || echo "🔴 Icons: Not found"
+[ -d ~/.poshthemes ] && echo "🟢 Oh My Posh Themes: Restored" || echo "🔴 Oh My Posh Themes: Not found"
+[ -d ~/.themes ] && echo "🟢 GTK Themes: Restored" || echo "🔴 GTK Themes: Not found"
+[ -d ~/.icons ] && echo "🟢 Icon Themes: Restored" || echo "🔴 Icon Themes: Not found"
 [ -f ~/.config/fish/config.fish ] && echo "🟢 Fish Config: Restored" || echo "🔴 Fish Config: Not found"
 [ -f ~/.config/Code/User/settings.json ] && echo "🟢 VS Code Settings: Restored" || echo "🔴 VS Code Settings: Not found"
 

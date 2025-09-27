@@ -27,15 +27,24 @@ This repository contains an automated setup script for my web development enviro
 - **Fish Shell** - Modern shell with intelligent autocompletion
 - **Oh My Posh** - Beautiful and informative shell prompt with icons
 
+### 🌐 **Web Browsers**
+- **Firefox** - Open-source web browser with privacy focus
+- **Google Chrome** - Feature-rich browser with developer tools
+
 ### 🗄️ **Database Tools**
 - **MongoDB Compass** - GUI for MongoDB database management
 - **pgAdmin 4** - Web-based PostgreSQL administration tool
+
+### ⌨️ **Input Methods**
+- **Avro Bangla Keyboard** - Bangla typing support with phonetic layout
+- **IBus Integration** - Seamless keyboard switching
 
 ### 🎨 **Customization**
 - **GNOME Extensions** - Enhanced desktop functionality
 - **WhiteSur Themes** - macOS-inspired GTK themes (multiple variants)
 - **Custom Icon Packs** - Beautiful icon themes for the desktop
 - **Nerd Fonts** - Patched fonts with programming ligatures and icons
+- **Oh My Posh Themes** - Custom terminal prompt themes
 
 ## � Repository Structure
 
@@ -50,7 +59,10 @@ dev-environment/
 │   ├── settings.json          # VS Code user settings
 │   ├── keybindings.json       # Custom keybindings
 │   └── snippets/              # Code snippets
-├── 🎨 themes/                 # GTK themes (WhiteSur variants)
+├── � posh/
+│   └── themes/
+│       └── custom-dev.omp.json # Custom Oh My Posh theme
+├── �🎨 themes/                 # GTK themes (WhiteSur variants)
 │   ├── WhiteSur-Dark/
 │   ├── WhiteSur-Light/
 │   └── ... (multiple color variants)
@@ -110,16 +122,38 @@ The setup includes popular GNOME extensions for enhanced desktop functionality:
 ### Features
 - **Intelligent Autocompletion** - Context-aware suggestions
 - **Syntax Highlighting** - Real-time command validation
-- **Oh My Posh Integration** - Beautiful, informative prompt
+- **Oh My Posh Integration** - Beautiful, informative prompt with custom themes
 - **Custom Functions** - Productivity-enhancing shell functions
 
+### Oh My Posh Themes
+The setup includes custom Oh My Posh themes that are automatically restored:
+- **Custom Dev Theme** - A developer-focused theme with Git status, Node.js version, and execution time
+- **Theme Restoration** - Automatically copies custom themes from `posh/themes/` to `~/.poshthemes/`
+- **Fallback Themes** - Downloads default Oh My Posh themes if custom themes aren't found
+
 ### Fonts
-The setup installs Nerd Fonts (JetBrains Mono, Fira Code) with:
+The setup installs Nerd Fonts (JetBrains Mono, Fira Code, Powerline) with:
 - Programming ligatures
 - Icon glyphs for terminal display
 - Enhanced readability
+- Full Unicode support
 
 > 🔧 **Troubleshooting**: If icons don't display correctly in your terminal, ensure you've selected a Nerd Font in your terminal settings (VS Code Terminal, GNOME Terminal, etc.).
+
+## ⌨️ Bangla Input Support
+
+### Avro Bangla Keyboard
+- **Phonetic Layout** - Type Bangla using English phonetics
+- **IBus Integration** - Seamless keyboard switching (Ctrl+Space)
+- **System Integration** - Works across all applications
+- **Multiple Fallbacks** - Uses ibus-avro, OpenBangla Keyboard, or Snap package
+
+### Post-Installation Setup
+After installation, configure Bangla input:
+1. Go to **Settings** → **Region & Language** → **Input Sources**
+2. Click **+** to add a new input source
+3. Search for **Bangla (Avro)** and add it
+4. Use **Super + Space** or **Ctrl + Space** to switch between keyboards
 
 ## 🎨 Themes & Customization
 
