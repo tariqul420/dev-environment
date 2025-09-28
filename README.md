@@ -1,6 +1,6 @@
 <div align="center">
 
-# � Dev Environment Setup for Ubuntu
+#   Dev Environment Setup for Ubuntu
 
 *Automated web development environment setup that gets your Ubuntu system ready in minutes*
 
@@ -46,7 +46,7 @@ This repository contains an automated setup script for my web development enviro
 - **Nerd Fonts** - Patched fonts with programming ligatures and icons
 - **Oh My Posh Themes** - Custom terminal prompt themes
 
-## � Repository Structure
+##   Repository Structure
 
 ```
 dev-environment/
@@ -59,10 +59,10 @@ dev-environment/
 │   ├── settings.json          # VS Code user settings
 │   ├── keybindings.json       # Custom keybindings
 │   └── snippets/              # Code snippets
-├── � posh/
+├──   posh/
 │   └── themes/
 │       └── custom-dev.omp.json # Custom Oh My Posh theme
-├── �🎨 themes/                 # GTK themes (WhiteSur variants)
+├──  🎨 themes/                 # GTK themes (WhiteSur variants)
 │   ├── WhiteSur-Dark/
 │   ├── WhiteSur-Light/
 │   └── ... (multiple color variants)
@@ -84,7 +84,7 @@ dev-environment/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/<your-username>/dev-environment.git
+   git clone https://github.com/tariqul420/dev-environment.git
    cd dev-environment
    ```
 
@@ -176,7 +176,7 @@ After installation, configure Bangla input:
 
 Feel free to fork this repository and customize it for your own development setup. If you have improvements or suggestions, pull requests are welcome!
 
-## � Credits
+##   Credits
 
 This setup is made possible by these amazing open-source projects:
 
