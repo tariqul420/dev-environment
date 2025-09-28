@@ -1,7 +1,0 @@
-....................................
- _*Commands List*_
-....................................
-*sudo apt update*
-*sudo apt upgrade*
-*sudo apt install timeshift*
-*sudo apt install git curl wget sassc gnome-tweaks gnome-shell-extension-manager*

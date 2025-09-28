@@ -1,5 +1,0 @@
-PORT=3000
-NODE_ENV=development
-
-MONGODB_DATABASE_URL=mongodb+srv://tariqul-portfolio:<db_password>@tariqul-islam.mchvj.mongodb.net/tariqul-portfolio?retryWrites=true&w=majority&appName=TARIQUL-ISLAM
-MONGODB_DATABASE_PASSWORD=xGbZ1QG9yUMuOoKJ

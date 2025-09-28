@@ -1,8 +1,0 @@
-NEXT_PUBLIC_BASE_URL=https://tariqul.vercel.app
-EMAIL_USER=tariqul.developer@gmail.com
-EMAIL_PASS=jfskiwrsadurhrjf
-MONGODB_DATABASE_URL=mongodb+srv://tariqul-portfolio:<db_password>@tariqul-islam.mchvj.mongodb.net/tariqul-portfolio?retryWrites=true&w=majority&appName=TARIQUL-ISLAM
-MONGODB_DATABASE_PASSWORD=xGbZ1QG9yUMuOoKJ
-NEXTAUTH_SECRET=sevaevdfarevczzdfrax
-
-

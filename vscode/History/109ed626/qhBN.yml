@@ -1,5 +1,0 @@
-name: Deploy to VPS on main
-
-on:
-  push:
-    branches: ['main']

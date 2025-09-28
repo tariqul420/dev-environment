@@ -1,4 +1,0 @@
-# Read more about SSH config files: https://linux.die.net/man/5/ssh_config
-  Host 167.88.42.4
-    HostName 167.88.42.4
-    User root

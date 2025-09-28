@@ -1,9 +1,0 @@
-# Ignore configuration and environment files not needed for production
-.env*
-
-# Ignore local files and directories
-.git
-.gitignore
-Dockerfile
-.dockerignore
-README.md
